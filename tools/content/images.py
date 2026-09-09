@@ -21,54 +21,84 @@ contenir des mots-cles.
 """
 
 
-def slot(file, alt, width=1200, height=800, caption=None):
-    return {"file": file, "alt": alt, "width": width, "height": height, "caption": caption}
+# =========================================================================
+# PHOTOS REELLES FOURNIES PAR LE CLIENT
+# -------------------------------------------------------------------------
+# Chaque constante ci-dessous correspond a une photo reelle d'intervention.
+# Le nom de fichier est definitif : deposer la photo a ce chemin exact, puis
+# relancer `python3 tools/build.py`. Les ALT decrivent ce que montre
+# reellement la photo (verifie visuellement, aucun mot-cle ajoute).
+# Format conseille : WebP, ratio 3/2, 1600 px de large minimum.
+# =========================================================================
+
+PHOTO_LED_CUISINE = "assets/images/eclairage/installation-bandeau-led-cuisine.webp"
+PHOTO_LED_PLAFOND = "assets/images/eclairage/installation-eclairage-led-plafond-chambre.webp"
+PHOTO_AMPOULE_SALON = "assets/images/eclairage/remplacement-ampoule-luminaire-salon.webp"
+PHOTO_APPAREILLAGE_MUR = "assets/images/prises/raccordement-prises-interrupteurs-mur.webp"
+PHOTO_POSE_PRISE = "assets/images/prises/installation-prise-courant-sejour.webp"
+
+
+def slot(file, alt, width=1200, height=800, caption=None, sujet=None):
+    return {"file": file, "alt": alt, "width": width, "height": height,
+            "caption": caption, "sujet": sujet}
 
 
 IMAGES = {
     # ---- Accueil ----------------------------------------------------------
+    # ---- PHOTO REELLE : cuisine, pose d'un bandeau LED sous meubles hauts
     "hero": slot(
-        "assets/images/electricien/electricien-richard-intervention-tableau-electrique.webp",
-        "Électricien raccordant les circuits d'un tableau électrique",
-        1400, 1000),
+        PHOTO_LED_CUISINE,
+        "Électricien fixant un bandeau LED sous les meubles hauts d'une cuisine",
+        1536, 1024,
+        sujet="Cuisine grise, plan de travail bois : pose d'un ruban LED sous meubles hauts"),
+    # ---- Galerie d'accueil : les photos reelles d'abord
     "home_gallery_1": slot(
-        "assets/images/tableau-electrique/tableau-electrique-neuf-apres-remplacement.webp",
-        "Tableau électrique neuf avec disjoncteurs et interrupteurs différentiels repérés",
-        1200, 800,
-        "Tableau remplacé et repéré : chaque protection est identifiée."),
+        PHOTO_LED_PLAFOND,
+        "Électricien posant un ruban LED dans une corniche de plafond, dans une chambre",
+        1536, 1024,
+        "Éclairage indirect : ruban LED posé en corniche de plafond.",
+        sujet="Chambre, technicien sur escabeau, ruban LED en corniche"),
     "home_gallery_2": slot(
-        "assets/images/depannage/recherche-panne-mesure-isolement.webp",
-        "Mesure d'isolement d'un circuit à l'aide d'un contrôleur",
-        1200, 800,
-        "La mesure d'isolement permet de localiser un défaut sans démonter."),
+        PHOTO_APPAREILLAGE_MUR,
+        "Électricien raccordant une rangée de prises et d'interrupteurs encastrés",
+        1536, 1024,
+        "Raccordement de l'appareillage lors d'une reprise d'installation.",
+        sujet="Rangée de boîtes d'encastrement ouvertes, conducteurs apparents"),
     "home_gallery_3": slot(
-        "assets/images/installation/installation-electrique-cablage-circuits.webp",
-        "Câblage de circuits électriques avant fermeture des cloisons",
-        1200, 800,
-        "Les cheminements se préparent avant la fermeture des cloisons."),
+        PHOTO_POSE_PRISE,
+        "Électricien installant une prise de courant dans un séjour",
+        1536, 1024,
+        "Pose d'appareillage : le poste de travail est protégé et les outils sont rangés.",
+        sujet="Séjour, technicien à genoux, boîtes d'encastrement, bâche de protection"),
     "home_gallery_4": slot(
-        "assets/images/renovation/renovation-electrique-maison-ancienne.webp",
-        "Reprise de l'installation électrique dans une maison ancienne",
-        1200, 800,
-        "Rénovation dans le bâti ancien : le passage des circuits conditionne le chantier."),
+        PHOTO_AMPOULE_SALON,
+        "Électricien remplaçant l'ampoule d'une suspension dans un salon",
+        1536, 1024,
+        "Intervention sur un point lumineux, casque et lunettes de protection.",
+        sujet="Salon, technicien sur escabeau, suspension noire"),
     "home_gallery_5": slot(
-        "assets/images/bornes/installation-borne-recharge-vehicule-electrique.webp",
-        "Borne de recharge murale installée dans un garage",
-        1200, 800,
-        "Point de recharge raccordé sur un circuit dédié."),
+        PHOTO_LED_CUISINE,
+        "Pose d'un bandeau LED sous les meubles hauts d'une cuisine",
+        1536, 1024,
+        "Éclairage de plan de travail : la lumière est placée là où l'on travaille.",
+        sujet="Cuisine, ruban LED sous meubles hauts"),
+    # ---- Emplacements en attente de photos
     "home_gallery_6": slot(
-        "assets/images/interventions/electricien-intervention-chantier.webp",
-        "Électricien au travail sur un chantier de rénovation",
+        "assets/images/tableau-electrique/remplacement-tableau-electrique-chantier.webp",
+        "Électricien intervenant sur un tableau électrique",
         1200, 800,
-        "Interventions chez les particuliers, les commerces et les professionnels."),
+        "Remplacement d'un tableau : chaque circuit est repéré avant raccordement.",
+        sujet="PHOTO ATTENDUE : intervention sur un tableau électrique"),
     "before": slot(
-        "assets/images/tableau-electrique/tableau-electrique-avant-renovation.webp",
+        "assets/images/avant-apres/tableau-electrique-avant-renovation.webp",
         "Ancien tableau électrique équipé de fusibles avant remplacement",
-        1000, 750),
+        1000, 750,
+        sujet="PHOTO ATTENDUE : tableau ancien AVANT travaux, vue de face, porte ouverte"),
     "after": slot(
-        "assets/images/tableau-electrique/tableau-electrique-apres-renovation.webp",
+        "assets/images/avant-apres/tableau-electrique-apres-renovation.webp",
         "Tableau électrique neuf après remplacement, circuits repérés",
-        1000, 750),
+        1000, 750,
+        sujet="PHOTO ATTENDUE : le MÊME tableau APRÈS travaux, même cadrage"),
     "about": slot(
         "assets/images/electricien/electricien-richard-vehicule-intervention.webp",
         "Véhicule d'intervention d'Electricien Richard",
@@ -94,8 +124,10 @@ IMAGES = {
         "assets/images/installation/installation-electrique-neuve-tableau.webp",
         "Installation électrique neuve en cours de raccordement", 1200, 800),
     "svc_renovation-electrique": slot(
-        "assets/images/renovation/renovation-electrique-passage-circuits.webp",
-        "Passage de nouveaux circuits lors d'une rénovation électrique", 1200, 800),
+        PHOTO_APPAREILLAGE_MUR,
+        "Reprise de l'appareillage électrique d'une pièce lors d'une rénovation",
+        1536, 1024,
+        "Rénovation : reprise des boîtes d'encastrement et de l'appareillage."),
     "svc_mise-aux-normes-electrique": slot(
         "assets/images/renovation/mise-aux-normes-electrique-tableau.webp",
         "Mise en sécurité d'une installation électrique ancienne", 1200, 800),
@@ -112,17 +144,27 @@ IMAGES = {
         "assets/images/depannage/court-circuit-connexion-endommagee.webp",
         "Connexion électrique endommagée à l'origine d'un défaut", 1200, 800),
     "svc_prise-electrique": slot(
-        "assets/images/prises/installation-prise-electrique.webp",
-        "Pose d'une prise de courant avec conducteur de protection", 1200, 800),
+        PHOTO_POSE_PRISE,
+        "Électricien installant une prise de courant dans un séjour",
+        1536, 1024,
+        "Pose d'une prise : le conducteur de protection est raccordé au mécanisme."),
     "svc_interrupteur": slot(
-        "assets/images/prises/remplacement-interrupteur.webp",
-        "Remplacement d'un interrupteur mural", 1200, 800),
+        PHOTO_APPAREILLAGE_MUR,
+        "Électricien raccordant une rangée de prises et d'interrupteurs encastrés",
+        1536, 1024,
+        "Raccordement de l'appareillage : chaque conducteur est repéré avant serrage."),
     "svc_eclairage": slot(
-        "assets/images/eclairage/installation-eclairage-interieur.webp",
-        "Installation d'un éclairage intérieur", 1200, 800),
+        PHOTO_LED_PLAFOND,
+        "Électricien posant un ruban LED dans une corniche de plafond, dans une chambre",
+        1536, 1024,
+        "Éclairage indirect par ruban LED : la source reste invisible, seule la lumière "
+        "réfléchie éclaire la pièce."),
     "svc_luminaire": slot(
-        "assets/images/eclairage/installation-luminaire-plafond.webp",
-        "Pose et raccordement d'un luminaire au plafond", 1200, 800),
+        PHOTO_AMPOULE_SALON,
+        "Électricien remplaçant l'ampoule d'une suspension au plafond d'un salon",
+        1536, 1024,
+        "Toute intervention sur un point lumineux se fait circuit coupé, "
+        "après vérification de l'absence de tension."),
     "svc_borne-recharge": slot(
         "assets/images/bornes/borne-recharge-installation-maison.webp",
         "Borne de recharge pour véhicule électrique installée en maison individuelle",

@@ -29,11 +29,39 @@ SITE = {
     ),
 
     # --- Contact ---------------------------------------------------------
-    "phone_display": "06 39 98 00 00",   # A_COMPLETER
-    "phone_tel": "+33639980000",         # A_COMPLETER
-    "phone_is_placeholder": True,        # passe a False quand le vrai numero est saisi
-    "email": "contact@electricien-richard.fr",   # A_COMPLETER
+    "phone_display": "02 20 06 00 75",
+    # Lien tel: en format national (demande explicite du client).
+    "phone_tel": "0220060075",
+    # Format E.164 reserve aux donnees structurees (recommandation schema.org).
+    "phone_e164": "+33220060075",
+    "phone_is_placeholder": False,
+    "email": "contact@electricien-richard.fr",   # A_COMPLETER : creer la boite reelle
     "email_is_placeholder": True,
+
+    # --- Identite legale (mentions legales uniquement) --------------------
+    # ATTENTION : ces donnees alimentent UNIQUEMENT la page mentions legales.
+    # Elles ne sont volontairement PAS injectees comme adresse du LocalBusiness
+    # (voir "address" plus bas et le README) : le siege social se situe hors des
+    # six departements desservis, l'y declarer brouillerait le referencement local.
+    # A VERIFIER par l'exploitant avant publication definitive.
+    "legal": {
+        "exploitant": "ASSOUL BILAL",
+        "forme": "Entrepreneur individuel",
+        "siren": "901 133 041",
+        "siret": "901 133 041 00011",
+        "ape_code": "81.29A",
+        "ape_label": "Autres activités de nettoyage n.c.a. "
+                     "(désinfection, désinsectisation, dératisation)",
+        "rcs": "901 133 041 R.C.S. Nanterre",
+        "adresse_siege": "1 rue Albert Simonin, 92400 Courbevoie",
+        "tva": None,          # A_COMPLETER : numero de TVA intracommunautaire
+        "directeur_publication": "ASSOUL BILAL",
+        "source": "https://www.pappers.fr/entreprise/assoul-bilal-901133041",
+        # Le code APE enregistre ne couvre pas les travaux d'electricite :
+        # a faire modifier aupres de l'INSEE, et verifier que l'assurance
+        # (RC pro + decennale) couvre bien l'activite d'electricien.
+        "ape_coherent": False,
+    },
 
     # --- Etablissement ---------------------------------------------------
     # Laisser a None tant que l'adresse reelle n'est pas connue :

@@ -46,7 +46,7 @@ def slugify(txt):
 
 # ---------------------------------------------------------------- images ---
 IMAGE_DIR = os.path.join(ROOT, "assets", "images")
-MISSING_IMAGES = []          # rempli au build : liste des photos attendues
+MISSING_IMAGES = {}          # rempli au build : {chemin: {"alt":..., "sujet":...}}
 
 
 def picture(slot, sizes="(min-width: 900px) 640px, 100vw", eager=False,
@@ -80,12 +80,16 @@ def picture(slot, sizes="(min-width: 900px) 640px, 100vw", eager=False,
                ' fetchpriority="high"' if eager else "")
         )
     else:
-        if slot["file"] not in MISSING_IMAGES:
-            MISSING_IMAGES.append(slot["file"])
+        MISSING_IMAGES.setdefault(slot["file"], {"alt": slot["alt"],
+                                                 "sujet": slot.get("sujet")})
+        # Emplacement neutre : il annonce la photo attendue, sans jamais simuler
+        # une photo ni afficher de faux contenu.
+        sujet = slot.get("sujet") or slot["alt"]
         img = (
             '<div class="media-placeholder" role="img" aria-label="%s" '
-            'style="aspect-ratio:%d/%d">Emplacement photo<span>%s</span></div>'
-            % (alt, w, h, esc(slot["file"]))
+            'style="aspect-ratio:%d/%d"><b>Photo à venir</b>'
+            '<span>%s</span></div>'
+            % (esc("Emplacement réservé à une photo : " + slot["alt"]), w, h, esc(sujet))
         )
 
     if cap:
@@ -263,7 +267,7 @@ def business_node(area_served=None):
         "priceRange": "$$",
     }
     if has_phone():
-        node["telephone"] = SITE["phone_tel"]
+        node["telephone"] = SITE.get("phone_e164", SITE["phone_tel"])
     if not SITE["email_is_placeholder"]:
         node["email"] = SITE["email"]
     if SITE["address"]:
@@ -448,11 +452,44 @@ def footer():
     </div>
   </div>
 </footer>
-<div class="sticky-cta">
-  <a class="btn btn--primary" href="tel:%s">%s Appeler</a>
+<nav class="sticky-cta" aria-label="Contact rapide">
+  <a class="btn btn--primary" href="tel:%s" aria-label="Appeler le %s">%s
+    <span class="sticky-num">%s</span><span class="sticky-short">Appeler</span></a>
   <a class="btn btn--dark" href="/devis-electricien.html">Demander un devis</a>
-</div>""" % (LOGO_SVG, "".join(contact_bits), ul(FOOTER_SERVICES), ul(FOOTER_ZONES),
-             ul(FOOTER_INFO), 2026, SITE["phone_tel"], icon("phone", 18))
+</nav>""" % (LOGO_SVG, "".join(contact_bits), ul(FOOTER_SERVICES), ul(FOOTER_ZONES),
+             ul(FOOTER_INFO), 2026, SITE["phone_tel"], SITE["phone_display"],
+             icon("phone", 18), SITE["phone_display"])
+
+
+FONT_DIR = "assets/fonts"
+
+
+def font_head():
+    """Police auto-hebergee si presente dans /assets/fonts, sinon Google Fonts.
+
+    Deposer inter-400.woff2, inter-600.woff2, inter-700.woff2, inter-800.woff2
+    dans assets/fonts/ supprime toute requete vers un tiers, ameliore le LCP et
+    permet de retirer la mention Google Fonts de la politique de confidentialite.
+    """
+    poids = [("400", "normal"), ("600", "normal"), ("700", "normal"), ("800", "normal")]
+    locaux = [(w, st) for w, st in poids
+              if os.path.exists(os.path.join(ROOT, FONT_DIR, "inter-%s.woff2" % w))]
+    if len(locaux) == len(poids):
+        faces = "".join(
+            "@font-face{font-family:Inter;font-style:%s;font-weight:%s;font-display:swap;"
+            "src:url(/%s/inter-%s.woff2) format('woff2')}" % (st, w, FONT_DIR, w)
+            for w, st in locaux)
+        return ('<link rel="preload" as="font" type="font/woff2" '
+                'href="/%s/inter-400.woff2" crossorigin>\n<style>%s</style>'
+                % (FONT_DIR, faces))
+    href = ("https://fonts.googleapis.com/css2?"
+            "family=Inter:wght@400;600;700;800;900&display=swap")
+    return (
+        '<link rel="preconnect" href="https://fonts.googleapis.com">\n'
+        '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
+        '<link rel="preload" as="style" href="%s">\n'
+        '<link rel="stylesheet" href="%s" media="print" onload="this.media=\'all\'">\n'
+        '<noscript><link rel="stylesheet" href="%s"></noscript>' % (href, href, href))
 
 
 PAGE_TPL = """<!DOCTYPE html>
@@ -478,11 +515,7 @@ PAGE_TPL = """<!DOCTYPE html>
 <meta name="twitter:image" content="{og_image}">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" media="print" onload="this.media='all'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap"></noscript>
+{fonts}
 <link rel="stylesheet" href="/assets/css/style.css">
 <script type="application/ld+json">{jsonld}</script>
 </head>
@@ -528,6 +561,7 @@ def render_page(path, title, description, content, trail=None, schema_nodes=None
         graph.extend(schema_nodes)
 
     return PAGE_TPL.format(
+        fonts=font_head(),
         title=esc(title),
         og_title=esc(og_title or title),
         description=esc(description),

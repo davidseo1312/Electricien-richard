@@ -31,16 +31,45 @@ Tout se trouve dans **`tools/content/site.py`** :
 
 | Champ | Description |
 |---|---|
-| `phone_display` / `phone_tel` | Numéro réel. Le numéro par défaut appartient à la plage `06 39 98 XX XX` **réservée par l'ARCEP à la fiction** : il ne joint personne. Passer `phone_is_placeholder` à `False` après saisie. |
-| `email` | Adresse réelle, puis `email_is_placeholder = False`. |
-| `address` | Adresse de l'établissement, si elle doit être publique. Tant qu'elle vaut `None`, aucune adresse n'est affichée ni déclarée en `LocalBusiness`. |
+| `phone_display` / `phone_tel` | ✅ Renseigné : **02 20 06 00 75** (lien `tel:0220060075`, `+33220060075` en JSON-LD). |
+| `email` | ⚠️ `contact@electricien-richard.fr` n'existe pas encore : créer la boîte, puis passer `email_is_placeholder` à `False`. |
+| `address` | Laissé à `None` **volontairement** — voir « Siège social et SEO local » ci-dessous. |
+| `legal` | ✅ Renseigné (ASSOUL BILAL, SIREN, SIRET, RCS, siège). Alimente **uniquement** la page mentions légales. Reste à compléter : TVA intracommunautaire, assurances, hébergeur, médiateur. |
 | `geo` | Coordonnées GPS réelles de l'établissement (facultatif). |
 | `opening_hours` | Horaires réels. `None` = aucun horaire affiché ni déclaré. |
-| `siret`, `rcs`, `assurance`, `hebergeur` | Mentions légales. |
+| `assurance`, `hebergeur` | Mentions légales : assureur + n° de police (RC pro et décennale), et identité de l'hébergeur. |
 | `social` | URL des profils réellement existants. |
 | `form_action` | Endpoint du formulaire (Formspree, Netlify Forms, script serveur…). Tant qu'il vaut `None`, le formulaire bascule sur un envoi par messagerie afin de rester fonctionnel. |
 
 Après modification : `python3 tools/build.py`.
+
+### Siège social et SEO local — décision technique
+
+Le siège social (1 rue Albert Simonin, 92400 Courbevoie) figure dans les **mentions
+légales**, comme la loi l'impose. Il n'est en revanche **pas** déclaré comme adresse du
+`LocalBusiness` dans les données structurées, et `address` reste donc à `None`.
+
+Raison : cette adresse se situe dans les Hauts-de-Seine, à plusieurs centaines de
+kilomètres des six départements desservis. La déclarer comme adresse de l'établissement
+enverrait à Google un signal de localisation en Île-de-France, en contradiction directe
+avec le référencement local visé en Bretagne et en Pays de la Loire. Le site déclare donc
+uniquement une zone desservie (`areaServed`), ce qui est le schéma prévu pour une
+entreprise d'intervention sans point d'accueil du public.
+
+Si un établissement secondaire est un jour ouvert dans l'un des six départements, c'est
+**cette** adresse qu'il faudra renseigner dans `address` — et elle devra être strictement
+identique à celle de la fiche Google Business Profile.
+
+### Points à faire vérifier par l'exploitant
+
+1. **Code APE 81.29A** — l'activité enregistrée (désinfection, désinsectisation,
+   dératisation) ne correspond pas à des travaux d'électricité. Une mise à jour auprès de
+   l'INSEE est à demander.
+2. **Assurances** — la RC professionnelle et la décennale doivent couvrir explicitement
+   l'activité d'électricien. Une police souscrite pour une activité de nettoyage ou de
+   désinfection ne couvrirait pas des travaux électriques en cas de sinistre.
+3. **Adresse e-mail** — `contact@electricien-richard.fr` doit être créée pour que le
+   formulaire soit exploitable.
 
 ### Ce qui n'est volontairement pas présent
 
@@ -58,8 +87,12 @@ Ces éléments peuvent être ajoutés quand ils seront vérifiables.
 
 ## Ajouter des photos
 
+Les cinq photos déjà transmises ont été analysées et **affectées à leurs pages** (hero,
+galerie, éclairage, luminaire, prises, interrupteur, rénovation). Il ne manque que les
+fichiers : voir la section 1 de `PHOTOS-A-FOURNIR.md` pour le chemin exact de chacune.
+
 1. Consulter **`PHOTOS-A-FOURNIR.md`** — régénéré à chaque build, il liste les
-   emplacements attendus avec leur chemin exact.
+   emplacements attendus avec leur chemin exact et le sujet de la photo.
 2. Déposer le fichier au chemin indiqué.
 3. Relancer `python3 tools/build.py`.
 

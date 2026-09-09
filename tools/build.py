@@ -118,6 +118,26 @@ def zones_strip(intro=True):
     return head + '<div class="zone-grid">%s</div>' % "".join(cards)
 
 
+def gallery_block(items):
+    """Galerie de chantiers : categorie, photo, legende.
+
+    `items` = liste de (cle_image, categorie, lien_facultatif).
+    Aucune legende n'est inventee : elle provient du manifeste photo.
+    """
+    cards = []
+    for key, cat, href in items:
+        img = IMG.IMAGES[key]
+        legende = img.get("caption")
+        lien = ('<a class="card-link" href="%s">Voir la prestation</a>' % href) if href else ""
+        cards.append(
+            '<figure class="shot">%s<figcaption><span class="shot-cat">%s</span>%s%s'
+            "</figcaption></figure>"
+            % (picture(img, sizes="(min-width:1100px) 340px, (min-width:700px) 45vw, 100vw",
+                       caption=False).replace("<figure>", "").replace("</figure>", ""),
+               esc(cat), ("<span>%s</span>" % esc(legende)) if legende else "", lien))
+    return '<div class="gallery">%s</div>' % "".join(cards)
+
+
 def sidebar_block(related_slugs=None, extra=""):
     cards = []
     cards.append(
@@ -807,39 +827,50 @@ def build_home():
   page.</p>
 </div>"""
 
-    gallery = '<div class="gallery">%s</div>' % "".join(
-        picture(IMG.IMAGES[k], sizes="(min-width: 1000px) 360px, 100vw")
-        for k in ["home_gallery_1", "home_gallery_2", "home_gallery_3",
-                  "home_gallery_4", "home_gallery_5", "home_gallery_6"])
+    gallery = gallery_block([
+        ("home_gallery_5", "Éclairage", "/eclairage.html"),
+        ("home_gallery_1", "Éclairage", "/eclairage.html"),
+        ("home_gallery_4", "Luminaire", "/luminaire.html"),
+        ("home_gallery_2", "Rénovation", "/renovation-electrique.html"),
+        ("home_gallery_3", "Prises et appareillage", "/prise-electrique.html"),
+        ("home_gallery_6", "Tableau électrique", "/tableau-electrique.html"),
+    ])
 
     before_after = """
 <div class="before-after">
-  <figure><span class="tag">Avant</span>%s
-  <figcaption>Tableau ancien à fusibles : aucune protection différentielle adaptée, aucun
-  repérage possible.</figcaption></figure>
-  <figure><span class="tag">Après</span>%s
+  <figure class="ba-item"><span class="tag tag--before">Avant</span>%s
+  <figcaption>Tableau ancien : protections dépassées et circuits non repérés.</figcaption></figure>
+  <figure class="ba-item"><span class="tag tag--after">Après</span>%s
   <figcaption>Tableau remplacé : différentiels 30 mA, protection de chaque circuit et
   repérage complet.</figcaption></figure>
-</div>""" % (picture(IMG.IMAGES["before"], sizes="(min-width: 800px) 480px, 100vw", caption=False)
-             .replace("<figure>", "").replace("</figure>", ""),
-             picture(IMG.IMAGES["after"], sizes="(min-width: 800px) 480px, 100vw", caption=False)
-             .replace("<figure>", "").replace("</figure>", ""))
+</div>
+<p class="form-note" style="margin-top:1rem">Les légendes seront ajustées à la situation
+réelle des photos dès qu'elles seront fournies : aucune description ne sera publiée sans
+correspondre à la photo qu'elle accompagne.</p>""" % (
+        picture(IMG.IMAGES["before"], sizes="(min-width: 800px) 480px, 100vw", caption=False)
+        .replace("<figure>", "").replace("</figure>", ""),
+        picture(IMG.IMAGES["after"], sizes="(min-width: 800px) 480px, 100vw", caption=False)
+        .replace("<figure>", "").replace("</figure>", ""))
 
     recent = sorted(BLOG.ARTICLES, key=lambda a: a["date"], reverse=True)[:3]
 
     main = """
 <section class="hero"><div class="container hero-inner">
   <div>
-    <p class="eyebrow">%s Bretagne · Pays de la Loire</p>
-    <h1>Électricien professionnel pour vos dépannages et installations</h1>
-    <p class="lead">Interventions électriques, dépannage, rénovation et mise en sécurité
-    dans les Côtes-d'Armor, le Finistère, l'Ille-et-Vilaine, le Morbihan, la Loire-Atlantique
-    et le Maine-et-Loire.</p>
+    <p class="eyebrow">%s Artisan électricien · 22 · 29 · 35 · 56 · 44 · 49</p>
+    <h1>Électricien professionnel en Bretagne et Pays de la Loire</h1>
+    <p class="hero-services">Dépannage <span aria-hidden="true">•</span> Installation
+    <span aria-hidden="true">•</span> Rénovation <span aria-hidden="true">•</span>
+    Mise en sécurité</p>
+    <p class="lead">Electricien Richard intervient chez les particuliers, les commerces et
+    les professionnels dans les Côtes-d'Armor, le Finistère, l'Ille-et-Vilaine, le Morbihan,
+    la Loire-Atlantique et le Maine-et-Loire.</p>
     <ul class="hero-badges">
-      <li>%s Devis détaillé avant travaux</li>
-      <li>%s Interventions urgentes traitées en priorité</li>
-      <li>%s Particuliers, commerces et professionnels</li>
-      <li>%s 6 départements couverts</li>
+      <li>%s Diagnostic avant travaux</li>
+      <li>%s Devis détaillé, sans engagement</li>
+      <li>%s Urgences traitées en priorité</li>
+      <li>%s Particuliers et professionnels</li>
+      <li>%s Priorité à la sécurité</li>
     </ul>
     %s
   </div>
@@ -877,6 +908,8 @@ def build_home():
 <section class="section section--tint"><div class="container">
   <div class="layout layout--sidebar">
     <div class="prose prose--wide">
+      <h2 id="reponses-rapides">Réponses rapides</h2>
+      %s
       %s
       <h2>Interventions courantes</h2>
       <p>Certaines situations reviennent constamment, quel que soit le département. Elles
@@ -948,12 +981,21 @@ def build_home():
 </div></section>
 
 <section class="section"><div class="container">%s</div></section>
-""" % (icon("map", 15),
-       icon("doc", 16), icon("clock", 16), icon("home", 16), icon("map", 16),
+""" % (icon("bolt", 15),
+       icon("search", 16), icon("doc", 16), icon("clock", 16), icon("home", 16),
+       icon("shield", 16),
        hero_cta_row(),
        picture(IMG.IMAGES["hero"], eager=True, sizes="(min-width: 900px) 560px, 100vw"),
        phone_link(classes="btn btn--primary"),
        services_grid(),
+       geo_card(geo_identity_rows(
+           "Dépannage électrique, recherche de panne, installation, rénovation, mise en "
+           "sécurité, mise aux normes, tableau électrique, éclairage, borne de recharge, VMC",
+           how="Diagnostic de l'installation, devis détaillé, puis intervention",
+           extra=[("Combien", "Le prix dépend des travaux et de l'état de l'installation : "
+                              "il est établi par devis, gratuit et sans engagement — "
+                              "aucun tarif n'est annoncé sans avoir vu l'installation."),
+                  ("Quand", "Selon disponibilité ; les urgences sont traitées en priorité")])),
        quick_answer(
            "Electricien Richard en bref",
            "<p><strong>Electricien Richard est un artisan électricien qui intervient chez les "
@@ -962,7 +1004,9 @@ def build_home():
            "électriques.</strong></p>"
            "<p>Le périmètre d'intervention couvre six départements de Bretagne et des Pays de "
            "la Loire.</p>",
-           [("Prestations", "Dépannage, recherche de panne, installation, rénovation, mise aux "
+           [("Téléphone", '<a href="tel:%s"><strong>%s</strong></a>'
+                          % (SITE["phone_tel"], SITE["phone_display"])),
+            ("Prestations", "Dépannage, recherche de panne, installation, rénovation, mise aux "
                             "normes, tableau électrique, éclairage, borne de recharge, VMC"),
             ("Zones", "Côtes-d'Armor (22), Finistère (29), Ille-et-Vilaine (35), Morbihan (56), "
                       "Loire-Atlantique (44), Maine-et-Loire (49)"),
@@ -1076,21 +1120,26 @@ def contact_form(compact=False, form_id="devis"):
   <div class="row row--2">
     <div class="field">
       <label for="%s-nom">Nom et prénom <span aria-hidden="true">*</span></label>
-      <input type="text" id="%s-nom" name="nom" autocomplete="name" required>
+      <input type="text" id="%s-nom" name="nom" autocomplete="name"
+        required minlength="2" autocapitalize="words">
     </div>
     <div class="field">
       <label for="%s-tel">Téléphone <span aria-hidden="true">*</span></label>
-      <input type="tel" id="%s-tel" name="telephone" autocomplete="tel" required>
+      <input type="tel" id="%s-tel" name="telephone" autocomplete="tel" required
+        inputmode="tel" pattern="[0-9+().\s-]{10,20}">
+      <span class="hint">Pour être rappelé si nécessaire.</span>
     </div>
   </div>
   <div class="row row--2">
     <div class="field">
       <label for="%s-email">Adresse e-mail</label>
-      <input type="email" id="%s-email" name="email" autocomplete="email">
+      <input type="email" id="%s-email" name="email" autocomplete="email"
+        inputmode="email">
     </div>
     <div class="field">
       <label for="%s-ville">Commune <span aria-hidden="true">*</span></label>
-      <input type="text" id="%s-ville" name="commune" autocomplete="address-level2" required>
+      <input type="text" id="%s-ville" name="commune" autocomplete="address-level2"
+        required minlength="2">
     </div>
   </div>
   <div class="row row--2">
@@ -1112,6 +1161,10 @@ def contact_form(compact=False, form_id="devis"):
       </select>
     </div>
   </div>
+  <p class="hp-field" aria-hidden="true">
+    <label for="%s-site">Ne pas remplir ce champ</label>
+    <input type="text" id="%s-site" name="site_web" tabindex="-1" autocomplete="off">
+  </p>
   <div class="field">
     <label for="%s-message">Décrivez votre besoin <span aria-hidden="true">*</span></label>
     <textarea id="%s-message" name="message" required
@@ -1123,13 +1176,14 @@ def contact_form(compact=False, form_id="devis"):
     <label for="%s-consent">J'accepte que ces informations soient utilisées pour traiter ma
     demande.</label>
   </div>
+  <p class="form-status" role="status" aria-live="polite" hidden></p>
   <div class="btn-row">
-    <button class="btn btn--primary" type="submit">Envoyer ma demande</button>
+    <button class="btn btn--primary" type="submit">Demander un devis</button>
     %s
   </div>
   <p class="form-note">%s</p>
 </form>""" % ((attrs, form_id) + (form_id,) * 10 + (dept_options,) + (form_id,) * 2
-              + (services_options,) + (form_id,) * 4
+              + (services_options,) + (form_id,) * 6
               + (phone_link("Appeler", classes="btn btn--ghost"), note))
 
 
@@ -1585,94 +1639,137 @@ def build_about_faq():
 
 
 def build_legal_pages():
-    todo = ('<span style="background:#FEF9C3;border:1px solid #EAB308;border-radius:4px;'
-            'padding:0 .3rem;font-weight:700">à compléter</span>')
+    L = SITE["legal"]
+    todo = ('<span class="a-completer">à compléter</span>')
+
+    def val(v):
+        return esc(v) if v else todo
 
     # ---------------- Mentions légales ----------------
+    ape_note = ""
+    if not L.get("ape_coherent", True):
+        ape_note = (
+            '<p class="form-note">Le code APE est attribué par l\'INSEE à la création de '
+            "l'entreprise ; il décrit l'activité principale déclarée et n'a pas de valeur "
+            "d'autorisation d'exercer. Une demande de mise à jour auprès de l'INSEE est en "
+            "cours pour refléter l'activité de travaux d'électricité.</p>")
+
     main = """
 <section class="section"><div class="container prose">
   <h1>Mentions légales</h1>
-  <p class="lead">Informations légales relatives au site electricien-richard.fr.</p>
+  <p class="lead">Informations légales relatives au site electricien-richard.fr, conformément
+  à l'article 6 de la loi n° 2004-575 du 21 juin 2004 pour la confiance dans l'économie
+  numérique.</p>
 
-  <div class="callout"><strong>Informations à compléter avant mise en ligne</strong>
-  <p>Les éléments signalés ci-dessous doivent être renseignés avec les données réelles de
-  l'entreprise. Aucune information administrative n'a été inventée.</p></div>
-
-  <h2>Éditeur du site</h2>
+  <h2 id="editeur">Éditeur du site</h2>
   <div class="table-wrap"><table><tbody>
-    <tr><th scope="row">Dénomination</th><td>Electricien Richard</td></tr>
+    <tr><th scope="row">Nom commercial</th><td>Electricien Richard</td></tr>
+    <tr><th scope="row">Exploitant</th><td>%s</td></tr>
     <tr><th scope="row">Forme juridique</th><td>%s</td></tr>
-    <tr><th scope="row">Adresse du siège</th><td>%s</td></tr>
+    <tr><th scope="row">Siège social</th><td>%s</td></tr>
+    <tr><th scope="row">SIREN</th><td>%s</td></tr>
+    <tr><th scope="row">SIRET (siège)</th><td>%s</td></tr>
+    <tr><th scope="row">RCS</th><td>%s</td></tr>
+    <tr><th scope="row">Code APE</th><td>%s — %s</td></tr>
+    <tr><th scope="row">TVA intracommunautaire</th><td>%s</td></tr>
+    <tr><th scope="row">Directeur de la publication</th><td>%s</td></tr>
     <tr><th scope="row">Téléphone</th><td><a href="tel:%s">%s</a></td></tr>
     <tr><th scope="row">Adresse e-mail</th><td><a href="mailto:%s">%s</a></td></tr>
-    <tr><th scope="row">Numéro SIRET</th><td>%s</td></tr>
-    <tr><th scope="row">Numéro de TVA intracommunautaire</th><td>%s</td></tr>
-    <tr><th scope="row">Directeur de la publication</th><td>%s</td></tr>
   </tbody></table></div>
+  %s
 
-  <h2>Assurances professionnelles</h2>
+  <h2 id="activite">Zone d'exercice</h2>
+  <p>Le siège social mentionné ci-dessus est l'adresse administrative de l'entreprise. Les
+  interventions sont réalisées dans les Côtes-d'Armor (22), le Finistère (29),
+  l'Ille-et-Vilaine (35), le Morbihan (56), la Loire-Atlantique (44) et le Maine-et-Loire
+  (49). Le siège ne constitue pas un point d'accueil du public :
+  <a href="/contact.html">le contact se fait par téléphone ou par formulaire</a>.</p>
+
+  <h2 id="assurances">Assurances professionnelles</h2>
   <div class="table-wrap"><table><tbody>
     <tr><th scope="row">Responsabilité civile professionnelle</th><td>%s</td></tr>
     <tr><th scope="row">Assurance décennale</th><td>%s</td></tr>
-    <tr><th scope="row">Couverture géographique</th><td>France métropolitaine</td></tr>
+    <tr><th scope="row">Couverture géographique</th><td>%s</td></tr>
   </tbody></table></div>
+  <p class="form-note">Les attestations d'assurance en cours de validité peuvent être
+  communiquées sur simple demande avant le début des travaux.</p>
 
-  <h2>Hébergement</h2>
+  <h2 id="hebergement">Hébergement</h2>
   <div class="table-wrap"><table><tbody>
     <tr><th scope="row">Hébergeur</th><td>%s</td></tr>
     <tr><th scope="row">Adresse</th><td>%s</td></tr>
   </tbody></table></div>
 
-  <h2>Propriété intellectuelle</h2>
-  <p>L'ensemble des contenus présents sur ce site — textes, mise en page, éléments
-  graphiques, photographies — est protégé par le droit d'auteur. Toute reproduction ou
-  représentation, totale ou partielle, sans autorisation préalable est interdite.</p>
+  <h2 id="propriete">Propriété intellectuelle</h2>
+  <p>L'ensemble des contenus présents sur ce site — textes, mise en page, éléments graphiques,
+  photographies — est protégé par le droit d'auteur. Toute reproduction ou représentation,
+  totale ou partielle, sans autorisation préalable est interdite.</p>
 
-  <h2>Responsabilité</h2>
-  <p>Les informations techniques publiées sur ce site ont une vocation d'information
-  générale. Elles ne se substituent pas à l'examen d'une installation par un professionnel :
-  chaque installation présente des caractéristiques propres qui conditionnent le diagnostic
-  et les travaux à réaliser.</p>
+  <h2 id="responsabilite">Responsabilité</h2>
+  <p>Les informations techniques publiées sur ce site ont une vocation d'information générale.
+  Elles ne se substituent pas à l'examen d'une installation par un professionnel : chaque
+  installation présente des caractéristiques propres qui conditionnent le diagnostic et les
+  travaux à réaliser.</p>
   <p>Les interventions sur une installation électrique sous tension présentent un risque
   d'électrisation et d'incendie. Aucun contenu de ce site ne doit être interprété comme une
   incitation à intervenir soi-même sur une installation.</p>
 
-  <h2>Liens externes</h2>
+  <h2 id="liens">Liens externes</h2>
   <p>Ce site peut contenir des liens vers des sites tiers. Leur contenu n'engage que leurs
   éditeurs respectifs.</p>
 
-  <h2>Données personnelles</h2>
+  <h2 id="donnees">Données personnelles</h2>
   <p>Le traitement des données transmises via les formulaires est décrit dans la
   <a href="/politique-de-confidentialite.html">politique de confidentialité</a>.</p>
 
-  <h2>Médiation de la consommation</h2>
-  <p>Conformément au code de la consommation, un consommateur peut recourir gratuitement à
-  un médiateur de la consommation en vue de la résolution amiable d'un litige. Les
-  coordonnées du médiateur compétent doivent être renseignées ici : %s</p>
+  <h2 id="mediation">Médiation de la consommation</h2>
+  <p>Conformément aux articles L.612-1 et suivants du code de la consommation, tout
+  consommateur a le droit de recourir gratuitement à un médiateur de la consommation en vue
+  de la résolution amiable d'un litige. Le médiateur compétent pour cette entreprise est :
+  %s</p>
+
+  <h2 id="litiges">Droit applicable</h2>
+  <p>Le présent site est soumis au droit français. La plateforme européenne de règlement en
+  ligne des litiges est accessible à l'adresse
+  <a href="https://ec.europa.eu/consumers/odr/" rel="noopener nofollow"
+  target="_blank">ec.europa.eu/consumers/odr</a>.</p>
 </div></section>
-""" % ((todo,), (SITE["address"] or todo), SITE["phone_tel"], SITE["phone_display"],
-       SITE["email"], SITE["email"], SITE["siret"] or todo, todo, todo,
+""" % (val(L["exploitant"]), val(L["forme"]), val(L["adresse_siege"]), val(L["siren"]),
+       val(L["siret"]), val(L["rcs"]), val(L["ape_code"]), val(L["ape_label"]),
+       val(L["tva"]), val(L["directeur_publication"]),
+       SITE["phone_tel"], SITE["phone_display"], SITE["email"], SITE["email"],
+       ape_note,
        SITE["assurance"] or todo, SITE["assurance"] or todo,
+       "France métropolitaine" if SITE["assurance"] else todo,
        SITE["hebergeur"] or todo, todo, todo)
+
     html = render_page("mentions-legales.html",
                        "Mentions légales | Electricien Richard",
                        "Mentions légales du site electricien-richard.fr : éditeur, "
-                       "assurances, hébergement et responsabilité.",
+                       "identification de l'entreprise, assurances, hébergement et "
+                       "responsabilité.",
                        main, trail=[("Accueil", "/"), ("Mentions légales", None)])
     write("mentions-legales.html", html, priority="0.2", changefreq="yearly")
 
     # ---------------- Politique de confidentialité ----------------
+    form_desc = ("Les données du formulaire sont transmises par message électronique à "
+                 "l'exploitant du site."
+                 if not SITE.get("form_action")
+                 else "Les données du formulaire sont transmises au prestataire technique "
+                      "chargé de son acheminement, puis à l'exploitant du site.")
+
     main = """
 <section class="section"><div class="container prose">
   <h1>Politique de confidentialité</h1>
   <p class="lead">Cette page décrit les données collectées par le site
-  electricien-richard.fr et l'usage qui en est fait.</p>
+  electricien-richard.fr et l'usage qui en est fait. Elle décrit le fonctionnement réel du
+  site : aucun outil qui n'y est pas installé n'y est mentionné.</p>
 
-  <h2>Responsable du traitement</h2>
-  <p>Electricien Richard, éditeur du site, dont les coordonnées figurent dans les
+  <h2 id="responsable">Responsable du traitement</h2>
+  <p>%s, exploitant du site, dont les coordonnées complètes figurent dans les
   <a href="/mentions-legales.html">mentions légales</a>.</p>
 
-  <h2>Données collectées</h2>
+  <h2 id="donnees">Données collectées</h2>
   <p>Les seules données collectées sont celles que vous transmettez volontairement via les
   formulaires de contact et de demande de devis :</p>
   <ul>
@@ -1680,54 +1777,69 @@ def build_legal_pages():
     <li>numéro de téléphone ;</li>
     <li>adresse e-mail, si vous la renseignez ;</li>
     <li>commune et département ;</li>
-    <li>description de votre demande.</li>
+    <li>nature de la demande et description de votre besoin.</li>
   </ul>
-  <p>Aucune donnée n'est collectée à votre insu. Le site n'utilise pas de cookie de mesure
-  d'audience ni de traceur publicitaire.</p>
+  <p>%s</p>
+  <p>Aucune donnée n'est collectée à votre insu.</p>
 
-  <h2>Finalité du traitement</h2>
+  <h2 id="cookies">Cookies et mesure d'audience</h2>
+  <p><strong>Ce site ne dépose aucun cookie.</strong> Il n'utilise ni outil de mesure
+  d'audience, ni traceur publicitaire, ni bouton de réseau social, ni régie publicitaire.
+  Aucune bannière de consentement n'est donc nécessaire.</p>
+  <p>Deux ressources sont chargées depuis des serveurs tiers, ce qui transmet
+  techniquement votre adresse IP à ces services, comme pour tout élément externe d'une page
+  web :</p>
+  <ul>
+    <li><strong>Fonds de carte OpenStreetMap</strong> — uniquement sur les pages comportant
+    une carte des zones d'intervention, et uniquement lorsque vous faites défiler la page
+    jusqu'à celle-ci.</li>
+    <li><strong>Police de caractères Google Fonts</strong> — utilisée pour l'affichage des
+    textes.</li>
+  </ul>
+  <p>Ces requêtes ne déposent pas de cookie sur votre terminal.</p>
+
+  <h2 id="finalite">Finalité du traitement</h2>
   <p>Ces données servent exclusivement à répondre à votre demande, établir un devis et, le
   cas échéant, organiser une intervention. Elles ne sont ni vendues, ni cédées, ni utilisées
   à des fins de prospection par des tiers.</p>
 
-  <h2>Base légale</h2>
+  <h2 id="base-legale">Base légale</h2>
   <p>Le traitement repose sur votre consentement, exprimé par l'envoi du formulaire, et sur
-  l'exécution de mesures précontractuelles prises à votre demande.</p>
+  l'exécution de mesures précontractuelles prises à votre demande (article 6.1.a et 6.1.b du
+  RGPD).</p>
 
-  <h2>Durée de conservation</h2>
+  <h2 id="duree">Durée de conservation</h2>
   <p>Les demandes n'ayant pas donné lieu à une intervention sont conservées le temps
   nécessaire à leur traitement, puis supprimées. Les documents liés à une intervention
   réalisée — devis, factures — sont conservés pendant la durée imposée par les obligations
   légales et comptables.</p>
 
-  <h2>Destinataires</h2>
-  <p>Les données sont destinées au seul responsable du traitement. Elles peuvent être
-  hébergées par le prestataire technique du site ou du service de messagerie, dans le cadre
-  de l'exécution de leurs prestations.</p>
+  <h2 id="destinataires">Destinataires</h2>
+  <p>Les données sont destinées au seul responsable du traitement. Elles peuvent transiter
+  par l'hébergeur du site et le service de messagerie utilisé, dans le cadre de l'exécution
+  de leurs prestations techniques.</p>
 
-  <h2>Vos droits</h2>
+  <h2 id="droits">Vos droits</h2>
   <p>Vous disposez d'un droit d'accès, de rectification, d'effacement, de limitation et
   d'opposition au traitement de vos données, ainsi que d'un droit à la portabilité. Ces
   droits s'exercent par courrier électronique à l'adresse indiquée dans les mentions
-  légales.</p>
+  légales, ou par courrier au siège de l'entreprise.</p>
   <p>Vous pouvez également introduire une réclamation auprès de la Commission nationale de
-  l'informatique et des libertés (CNIL).</p>
+  l'informatique et des libertés (CNIL), 3 place de Fontenoy, TSA 80715, 75334 Paris
+  Cedex 07 — <a href="https://www.cnil.fr" rel="noopener nofollow"
+  target="_blank">cnil.fr</a>.</p>
 
-  <h2>Cookies</h2>
-  <p>Le site ne dépose aucun cookie de mesure d'audience ni de cookie publicitaire. La carte
-  interactive des zones d'intervention charge des fonds de plan depuis OpenStreetMap : cette
-  requête est effectuée par votre navigateur auprès de ce service lorsque vous consultez une
-  page comportant une carte.</p>
-
-  <h2>Sécurité</h2>
+  <h2 id="securite">Sécurité</h2>
   <p>Les données transmises via le site circulent en HTTPS. Elles ne sont accessibles qu'aux
   personnes chargées du traitement des demandes.</p>
 </div></section>
-"""
+""" % (esc(SITE["legal"]["exploitant"] or SITE["name"]), form_desc)
+
     html = render_page("politique-de-confidentialite.html",
                        "Politique de confidentialité | Electricien Richard",
                        "Politique de confidentialité du site electricien-richard.fr : "
-                       "données collectées, finalités, durée de conservation et droits.",
+                       "données collectées, absence de cookies, durée de conservation et "
+                       "droits des personnes.",
                        main,
                        trail=[("Accueil", "/"), ("Politique de confidentialité", None)])
     write("politique-de-confidentialite.html", html, priority="0.2", changefreq="yearly")
@@ -1899,33 +2011,62 @@ def build_favicon():
 
 def build_photo_report():
     """Liste des photos attendues, regeneree a chaque build."""
+    from content.images import (PHOTO_LED_CUISINE, PHOTO_LED_PLAFOND, PHOTO_AMPOULE_SALON,
+                                PHOTO_APPAREILLAGE_MUR, PHOTO_POSE_PRISE)
+    fournies = {
+        PHOTO_LED_CUISINE: "Cuisine grise, plan de travail bois : pose d'un ruban LED sous "
+                           "les meubles hauts",
+        PHOTO_LED_PLAFOND: "Chambre : technicien sur escabeau posant un ruban LED en "
+                           "corniche de plafond",
+        PHOTO_AMPOULE_SALON: "Salon : technicien casqué remplaçant l'ampoule d'une "
+                             "suspension noire",
+        PHOTO_APPAREILLAGE_MUR: "Rangée de boîtes d'encastrement ouvertes, raccordement "
+                                "des prises et interrupteurs",
+        PHOTO_POSE_PRISE: "Séjour : technicien à genoux posant une prise, bâche de "
+                          "protection et outils au sol",
+    }
+    prioritaires = [(f, d) for f, d in fournies.items() if f in MISSING_IMAGES]
+    autres = sorted(f for f in MISSING_IMAGES if f not in fournies)
+
     lines = [
         "# Photos à fournir",
         "",
-        "Ce fichier est **généré automatiquement** à chaque build "
-        "(`python3 tools/build.py`).",
+        "Fichier **généré automatiquement** à chaque build (`python3 tools/build.py`).",
         "",
-        "Chaque ligne correspond à un emplacement de photo prévu dans le site. "
-        "Déposez le fichier au chemin exact indiqué, puis relancez le build : "
-        "la photo remplace automatiquement l'emplacement neutre, sans aucune "
-        "modification de code.",
+        "Déposez chaque photo au chemin exact indiqué, puis relancez le build : elle "
+        "remplace automatiquement l'emplacement réservé, sans aucune modification de code.",
         "",
-        "## Format recommandé",
+        "## Format",
         "",
-        "- Format **WebP** (ou AVIF), qualité 75 à 85.",
-        "- Largeur d'origine : 1600 px minimum pour les photos principales.",
-        "- Variantes responsives facultatives mais recommandées : en ajoutant "
-        "`nom-480w.webp`, `nom-800w.webp`, `nom-1200w.webp`, `nom-1600w.webp` "
-        "à côté du fichier principal, un attribut `srcset` est généré automatiquement.",
-        "- Vérifiez le texte alternatif indiqué : il doit décrire ce que montre "
-        "réellement la photo fournie. Un ALT ne doit pas être une liste de mots-clés.",
-        "",
-        "## Emplacements attendus (%d)" % len(MISSING_IMAGES),
+        "- **WebP**, qualité 75 à 85, ratio **3/2**, 1600 px de large minimum.",
+        "- Variantes responsives facultatives : ajouter `nom-480w.webp`, `nom-800w.webp`, "
+        "`nom-1200w.webp`, `nom-1600w.webp` à côté du fichier principal génère "
+        "automatiquement un attribut `srcset`.",
+        "- Le texte alternatif est défini dans `tools/content/images.py`. Vérifiez qu'il "
+        "décrit bien ce que montre la photo déposée.",
         "",
     ]
-    for f in sorted(MISSING_IMAGES):
+
+    if prioritaires:
+        lines += [
+            "## 1. Photos déjà transmises — à déposer dans le dépôt (%d)" % len(prioritaires),
+            "",
+            "Ces cinq photos ont été analysées et affectées à leurs pages. Il ne manque que "
+            "le fichier binaire, qui ne peut pas être récupéré depuis la conversation.",
+            "",
+        ]
+        for f, d in prioritaires:
+            lines.append("- [ ] `%s`" % f)
+            lines.append("      → %s" % d)
+        lines.append("")
+
+    lines += ["## 2. Emplacements en attente d'une photo (%d)" % len(autres), ""]
+    for f in autres:
+        meta = MISSING_IMAGES[f]
         lines.append("- [ ] `%s`" % f)
+        lines.append("      → %s" % (meta.get("sujet") or meta["alt"]))
     lines.append("")
+
     with open(os.path.join(ROOT, "PHOTOS-A-FOURNIR.md"), "w", encoding="utf-8") as fh:
         fh.write("\n".join(lines))
 
