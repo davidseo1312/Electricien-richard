@@ -1,36 +1,44 @@
-# Photos à fournir
+# Photos
 
 Fichier **généré automatiquement** à chaque build (`python3 tools/build.py`).
 
-Déposez chaque photo au chemin exact indiqué, puis relancez le build : elle remplace automatiquement l'emplacement réservé, sans aucune modification de code.
+## Comment ajouter une photo
 
-## Format
+```bash
+# 1. déposer la photo dans photos-inbox/ en la nommant d'après la clé
+#    de l'emplacement (extension et casse indifférentes)
+cp ma-photo.jpg photos-inbox/svc_eclairage.jpg
 
-- **WebP**, qualité 75 à 85, ratio **3/2**, 1600 px de large minimum.
-- Variantes responsives facultatives : ajouter `nom-480w.webp`, `nom-800w.webp`, `nom-1200w.webp`, `nom-1600w.webp` à côté du fichier principal génère automatiquement un attribut `srcset`.
-- Le texte alternatif est défini dans `tools/content/images.py`. Vérifiez qu'il décrit bien ce que montre la photo déposée.
+# 2. intégration : conversion WebP, variantes responsives, mise en place
+python3 tools/photos.py
 
-## 1. Photos déjà transmises — à déposer dans le dépôt (5)
+# 3. régénération du site
+python3 tools/build.py
+```
 
-Ces cinq photos ont été analysées et affectées à leurs pages. Il ne manque que le fichier binaire, qui ne peut pas être récupéré depuis la conversation.
+`python3 tools/photos.py --list` affiche toutes les clés disponibles.
 
-- [ ] `assets/images/eclairage/installation-bandeau-led-cuisine.webp`
-      → Cuisine grise, plan de travail bois : pose d'un ruban LED sous les meubles hauts
-- [ ] `assets/images/eclairage/installation-eclairage-led-plafond-chambre.webp`
-      → Chambre : technicien sur escabeau posant un ruban LED en corniche de plafond
-- [ ] `assets/images/eclairage/remplacement-ampoule-luminaire-salon.webp`
-      → Salon : technicien casqué remplaçant l'ampoule d'une suspension noire
-- [ ] `assets/images/prises/raccordement-prises-interrupteurs-mur.webp`
-      → Rangée de boîtes d'encastrement ouvertes, raccordement des prises et interrupteurs
-- [ ] `assets/images/prises/installation-prise-courant-sejour.webp`
-      → Séjour : technicien à genoux posant une prise, bâche de protection et outils au sol
+Le script corrige l'orientation, **supprime les métadonnées EXIF (y compris les coordonnées GPS)**, redimensionne à 1600 px, convertit en WebP et génère les variantes 480 / 800 / 1200 / 1600 px utilisées par `srcset`.
 
-## 2. Emplacements en attente d'une photo (64)
+Rien d'autre n'est à modifier : les dimensions affichées sont lues dans le fichier livré, donc le ratio est toujours exact et aucun décalage de mise en page ne se produit.
 
-- [ ] `assets/images/avant-apres/tableau-electrique-apres-renovation.webp`
-      → PHOTO ATTENDUE : le MÊME tableau APRÈS travaux, même cadrage
-- [ ] `assets/images/avant-apres/tableau-electrique-avant-renovation.webp`
-      → PHOTO ATTENDUE : tableau ancien AVANT travaux, vue de face, porte ouverte
+## 1. Photos transmises — fichiers à déposer (6)
+
+Ces photos ont été analysées et affectées. **Une photo = un seul emplacement**, aucune n'est réutilisée ailleurs sur le site.
+
+| Clé (nom du fichier) | Photo | Emplacement |
+|---|---|---|
+| `hero` | Cuisine grise, plan de travail bois : pose d'un ruban LED sous les meubles hauts | Accueil — image principale |
+| `svc_eclairage` | Chambre : technicien sur escabeau posant un ruban LED en corniche de plafond | eclairage.html |
+| `svc_luminaire` | Salon : technicien casqué remplaçant l'ampoule d'une suspension noire | luminaire.html |
+| `svc_prise-electrique` | Séjour : technicien à genoux posant une prise, bâche de protection et outils au sol | prise-electrique.html |
+| `svc_disjoncteur` | Coffret extérieur : intervention sur le disjoncteur de branchement sous compteur Linky | disjoncteur.html |
+| `svc_interrupteur` | Rangée de boîtes d'encastrement ouvertes, raccordement des prises et interrupteurs | interrupteur.html |
+
+## 2. Emplacements encore libres (62)
+
+Les sections concernées restent masquées tant qu'aucune photo n'y figure : le site n'affiche jamais d'emplacement vide au visiteur.
+
 - [ ] `assets/images/blog/comment-choisir-un-electricien.webp`
       → Comment choisir un électricien ?
 - [ ] `assets/images/blog/difference-disjoncteur-differentiel.webp`
@@ -83,10 +91,10 @@ Ces cinq photos ont été analysées et affectées à leurs pages. Il ne manque 
       → Travaux électriques dans un local professionnel
 - [ ] `assets/images/renovation/mise-aux-normes-electrique-tableau.webp`
       → Mise en sécurité d'une installation électrique ancienne
-- [ ] `assets/images/tableau-electrique/disjoncteur-tableau-electrique.webp`
-      → Disjoncteurs divisionnaires sur un tableau électrique
+- [ ] `assets/images/renovation/renovation-electrique-passage-circuits.webp`
+      → PHOTO ATTENDUE : passage de gaines ou saignées en rénovation
 - [ ] `assets/images/tableau-electrique/remplacement-tableau-electrique-chantier.webp`
-      → PHOTO ATTENDUE : intervention sur un tableau électrique
+      → PHOTO ATTENDUE : tableau électrique ouvert pendant l'intervention
 - [ ] `assets/images/tableau-electrique/remplacement-tableau-electrique.webp`
       → Remplacement d'un tableau électrique
 - [ ] `assets/images/zones/electricien-ancenis-intervention.webp`

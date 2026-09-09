@@ -17,7 +17,7 @@ from datetime import date
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from render import (ROOT, esc, abs_url, url_for, picture, icon, phone_link, quick_answer,
+from render import (ROOT, esc, abs_url, url_for, picture, has_photo, icon, phone_link, quick_answer,
                     table, callout, steps_block, checks, faq_block, cta_band, cta_inline,
                     link_cloud, map_block, faq_node, render_page, MISSING_IMAGES,
                     BUSINESS_ID, geo_card)
@@ -827,30 +827,52 @@ def build_home():
   page.</p>
 </div>"""
 
-    gallery = gallery_block([
-        ("home_gallery_5", "Éclairage", "/eclairage.html"),
-        ("home_gallery_1", "Éclairage", "/eclairage.html"),
-        ("home_gallery_4", "Luminaire", "/luminaire.html"),
-        ("home_gallery_2", "Rénovation", "/renovation-electrique.html"),
-        ("home_gallery_3", "Prises et appareillage", "/prise-electrique.html"),
+    # La galerie n'affiche que des photos reelles. Tant qu'aucune n'est
+    # deposee, la section entiere est omise plutot que d'aligner des
+    # emplacements vides sur un site en ligne.
+    gallery_items = [
+        ("home_gallery_1", "Interventions", "/electricien.html"),
+        ("home_gallery_2", "Dépannage", "/electricien-depannage.html"),
+        ("home_gallery_3", "Installation", "/installation-electrique.html"),
+        ("home_gallery_4", "Rénovation", "/renovation-electrique.html"),
+        ("home_gallery_5", "Borne de recharge", "/borne-recharge.html"),
         ("home_gallery_6", "Tableau électrique", "/tableau-electrique.html"),
-    ])
+    ]
+    gallery_items = [i for i in gallery_items if has_photo(IMG.IMAGES[i[0]])]
+    gallery = gallery_block(gallery_items) if gallery_items else ""
 
-    before_after = """
+    # Avant / apres : n'a de sens qu'avec les deux photos du meme tableau.
+    if has_photo(IMG.IMAGES["before"]) and has_photo(IMG.IMAGES["after"]):
+        before_after = """
+<h3 style="margin-top:2.5rem">Avant / après : remplacement d'un tableau</h3>
 <div class="before-after">
   <figure class="ba-item"><span class="tag tag--before">Avant</span>%s
   <figcaption>Tableau ancien : protections dépassées et circuits non repérés.</figcaption></figure>
   <figure class="ba-item"><span class="tag tag--after">Après</span>%s
   <figcaption>Tableau remplacé : différentiels 30 mA, protection de chaque circuit et
   repérage complet.</figcaption></figure>
-</div>
-<p class="form-note" style="margin-top:1rem">Les légendes seront ajustées à la situation
-réelle des photos dès qu'elles seront fournies : aucune description ne sera publiée sans
-correspondre à la photo qu'elle accompagne.</p>""" % (
-        picture(IMG.IMAGES["before"], sizes="(min-width: 800px) 480px, 100vw", caption=False)
-        .replace("<figure>", "").replace("</figure>", ""),
-        picture(IMG.IMAGES["after"], sizes="(min-width: 800px) 480px, 100vw", caption=False)
-        .replace("<figure>", "").replace("</figure>", ""))
+</div>""" % (
+            picture(IMG.IMAGES["before"], sizes="(min-width: 800px) 480px, 100vw",
+                    caption=False).replace("<figure>", "").replace("</figure>", ""),
+            picture(IMG.IMAGES["after"], sizes="(min-width: 800px) 480px, 100vw",
+                    caption=False).replace("<figure>", "").replace("</figure>", ""))
+    else:
+        before_after = ""
+
+    if gallery or before_after:
+        section_photos = """
+<section class="section"><div class="container">
+  <div class="section-head center">
+    <p class="eyebrow">Nos interventions</p>
+    <h2>Photos de chantiers et d'interventions</h2>
+    <p class="lead">Des situations réelles rencontrées chez les particuliers, dans les
+    commerces et les locaux professionnels.</p>
+  </div>
+  %s
+  %s
+</div></section>""" % (gallery, before_after)
+    else:
+        section_photos = ""
 
     recent = sorted(BLOG.ARTICLES, key=lambda a: a["date"], reverse=True)[:3]
 
@@ -922,18 +944,7 @@ correspondre à la photo qu'elle accompagne.</p>""" % (
   </div>
 </div></section>
 
-<section class="section"><div class="container">
-  <div class="section-head center">
-    <p class="eyebrow">Nos interventions</p>
-    <h2>Photos de chantiers et d'interventions</h2>
-    <p class="lead">Des situations réelles rencontrées chez les particuliers, dans les
-    commerces et les locaux professionnels.</p>
-  </div>
-  %s
-  <h3 style="margin-top:2.5rem">Avant / après : remplacement d'un tableau</h3>
-  %s
-</div></section>
-
+%s
 <section class="section section--soft"><div class="container">
   <div class="section-head">
     <p class="eyebrow">Zones d'intervention</p>
@@ -1037,7 +1048,7 @@ correspondre à la photo qu'elle accompagne.</p>""" % (
        ]),
        sidebar_block(["electricien", "electricien-depannage", "renovation-electrique",
                       "tarifs"]),
-       gallery, before_after,
+       section_photos,
        zones_strip(intro=False), map_block(map_points()),
        BLOCKS["PROCESS_STEPS"],
        reviews,
@@ -2011,56 +2022,81 @@ def build_favicon():
 
 def build_photo_report():
     """Liste des photos attendues, regeneree a chaque build."""
-    from content.images import (PHOTO_LED_CUISINE, PHOTO_LED_PLAFOND, PHOTO_AMPOULE_SALON,
-                                PHOTO_APPAREILLAGE_MUR, PHOTO_POSE_PRISE)
-    fournies = {
-        PHOTO_LED_CUISINE: "Cuisine grise, plan de travail bois : pose d'un ruban LED sous "
-                           "les meubles hauts",
-        PHOTO_LED_PLAFOND: "Chambre : technicien sur escabeau posant un ruban LED en "
-                           "corniche de plafond",
-        PHOTO_AMPOULE_SALON: "Salon : technicien casqué remplaçant l'ampoule d'une "
-                             "suspension noire",
-        PHOTO_APPAREILLAGE_MUR: "Rangée de boîtes d'encastrement ouvertes, raccordement "
-                                "des prises et interrupteurs",
-        PHOTO_POSE_PRISE: "Séjour : technicien à genoux posant une prise, bâche de "
-                          "protection et outils au sol",
-    }
-    prioritaires = [(f, d) for f, d in fournies.items() if f in MISSING_IMAGES]
-    autres = sorted(f for f in MISSING_IMAGES if f not in fournies)
+    # Photos deja transmises par le client : cle d'emplacement -> description.
+    # La cle sert a nommer le fichier depose dans photos-inbox/.
+    TRANSMISES = [
+        ("hero", "Cuisine grise, plan de travail bois : pose d'un ruban LED sous les "
+                 "meubles hauts", "Accueil — image principale"),
+        ("svc_eclairage", "Chambre : technicien sur escabeau posant un ruban LED en "
+                          "corniche de plafond", "eclairage.html"),
+        ("svc_luminaire", "Salon : technicien casqué remplaçant l'ampoule d'une "
+                          "suspension noire", "luminaire.html"),
+        ("svc_prise-electrique", "Séjour : technicien à genoux posant une prise, bâche "
+                                 "de protection et outils au sol", "prise-electrique.html"),
+        ("svc_disjoncteur", "Coffret extérieur : intervention sur le disjoncteur de "
+                            "branchement sous compteur Linky", "disjoncteur.html"),
+        ("svc_interrupteur", "Rangée de boîtes d'encastrement ouvertes, raccordement des "
+                             "prises et interrupteurs", "interrupteur.html"),
+    ]
+    tous = dict(IMG.IMAGES)
+    attente = [(k, d, page) for k, d, page in TRANSMISES
+               if k in tous and tous[k]["file"] in MISSING_IMAGES]
+    cles_transmises = {k for k, _, _ in TRANSMISES}
+    autres = sorted(f for f in MISSING_IMAGES
+                    if f not in {tous[k]["file"] for k in cles_transmises if k in tous})
 
     lines = [
-        "# Photos à fournir",
+        "# Photos",
         "",
         "Fichier **généré automatiquement** à chaque build (`python3 tools/build.py`).",
         "",
-        "Déposez chaque photo au chemin exact indiqué, puis relancez le build : elle "
-        "remplace automatiquement l'emplacement réservé, sans aucune modification de code.",
+        "## Comment ajouter une photo",
         "",
-        "## Format",
+        "```bash",
+        "# 1. déposer la photo dans photos-inbox/ en la nommant d'après la clé",
+        "#    de l'emplacement (extension et casse indifférentes)",
+        "cp ma-photo.jpg photos-inbox/svc_eclairage.jpg",
         "",
-        "- **WebP**, qualité 75 à 85, ratio **3/2**, 1600 px de large minimum.",
-        "- Variantes responsives facultatives : ajouter `nom-480w.webp`, `nom-800w.webp`, "
-        "`nom-1200w.webp`, `nom-1600w.webp` à côté du fichier principal génère "
-        "automatiquement un attribut `srcset`.",
-        "- Le texte alternatif est défini dans `tools/content/images.py`. Vérifiez qu'il "
-        "décrit bien ce que montre la photo déposée.",
+        "# 2. intégration : conversion WebP, variantes responsives, mise en place",
+        "python3 tools/photos.py",
+        "",
+        "# 3. régénération du site",
+        "python3 tools/build.py",
+        "```",
+        "",
+        "`python3 tools/photos.py --list` affiche toutes les clés disponibles.",
+        "",
+        "Le script corrige l'orientation, **supprime les métadonnées EXIF "
+        "(y compris les coordonnées GPS)**, redimensionne à 1600 px, convertit en WebP "
+        "et génère les variantes 480 / 800 / 1200 / 1600 px utilisées par `srcset`.",
+        "",
+        "Rien d'autre n'est à modifier : les dimensions affichées sont lues dans le "
+        "fichier livré, donc le ratio est toujours exact et aucun décalage de mise en "
+        "page ne se produit.",
         "",
     ]
 
-    if prioritaires:
+    if attente:
         lines += [
-            "## 1. Photos déjà transmises — à déposer dans le dépôt (%d)" % len(prioritaires),
+            "## 1. Photos transmises — fichiers à déposer (%d)" % len(attente),
             "",
-            "Ces cinq photos ont été analysées et affectées à leurs pages. Il ne manque que "
-            "le fichier binaire, qui ne peut pas être récupéré depuis la conversation.",
+            "Ces photos ont été analysées et affectées. **Une photo = un seul "
+            "emplacement**, aucune n'est réutilisée ailleurs sur le site.",
             "",
+            "| Clé (nom du fichier) | Photo | Emplacement |",
+            "|---|---|---|",
         ]
-        for f, d in prioritaires:
-            lines.append("- [ ] `%s`" % f)
-            lines.append("      → %s" % d)
+        for k, d, page in attente:
+            lines.append("| `%s` | %s | %s |" % (k, d, page))
         lines.append("")
 
-    lines += ["## 2. Emplacements en attente d'une photo (%d)" % len(autres), ""]
+    lines += [
+        "## 2. Emplacements encore libres (%d)" % len(autres),
+        "",
+        "Les sections concernées restent masquées tant qu'aucune photo n'y figure : "
+        "le site n'affiche jamais d'emplacement vide au visiteur.",
+        "",
+    ]
     for f in autres:
         meta = MISSING_IMAGES[f]
         lines.append("- [ ] `%s`" % f)

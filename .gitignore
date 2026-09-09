@@ -1,3 +1,7 @@
 __pycache__/
 *.pyc
 .DS_Store
+
+# Photos déposées en attente de traitement (les fichiers finaux vont dans assets/)
+photos-inbox/*
+!photos-inbox/LISEZ-MOI.md

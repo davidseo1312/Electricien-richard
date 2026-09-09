@@ -49,6 +49,40 @@ IMAGE_DIR = os.path.join(ROOT, "assets", "images")
 MISSING_IMAGES = {}          # rempli au build : {chemin: {"alt":..., "sujet":...}}
 
 
+def webp_size(path):
+    """Dimensions reelles d'un WebP, sans dependance externe.
+
+    Gere les trois variantes du format (VP8 simple, VP8L sans perte, VP8X
+    etendu). Retourne None si le fichier n'est pas lisible : les valeurs
+    declarees dans le manifeste servent alors de repli.
+    """
+    try:
+        with open(path, "rb") as fh:
+            head = fh.read(32)
+        if head[:4] != b"RIFF" or head[8:12] != b"WEBP":
+            return None
+        tag = head[12:16]
+        if tag == b"VP8 ":
+            w = int.from_bytes(head[26:28], "little") & 0x3FFF
+            h = int.from_bytes(head[28:30], "little") & 0x3FFF
+            return w, h
+        if tag == b"VP8L":
+            b = int.from_bytes(head[21:25], "little")
+            return (b & 0x3FFF) + 1, ((b >> 14) & 0x3FFF) + 1
+        if tag == b"VP8X":
+            w = int.from_bytes(head[24:27], "little") + 1
+            h = int.from_bytes(head[27:30], "little") + 1
+            return w, h
+    except Exception:                                   # noqa: BLE001
+        return None
+    return None
+
+
+def has_photo(slot):
+    """True si le fichier photo existe reellement dans le depot."""
+    return os.path.exists(os.path.join(ROOT, slot["file"].lstrip("/")))
+
+
 def picture(slot, sizes="(min-width: 900px) 640px, 100vw", eager=False,
             caption=None, classes=""):
     """
@@ -65,6 +99,11 @@ def picture(slot, sizes="(min-width: 900px) 640px, 100vw", eager=False,
     cls = ' class="%s"' % esc(classes) if classes else ""
 
     if os.path.exists(disk):
+        # Les dimensions reelles priment sur celles declarees : le ratio
+        # affiche correspond ainsi toujours au fichier livre (CLS nul).
+        reelles = webp_size(disk) if rel.lower().endswith(".webp") else None
+        if reelles:
+            w, h = reelles
         base, ext = os.path.splitext(rel)
         srcset = []
         for width in (480, 800, 1200, 1600):

@@ -36,6 +36,11 @@ PHOTO_LED_PLAFOND = "assets/images/eclairage/installation-eclairage-led-plafond-
 PHOTO_AMPOULE_SALON = "assets/images/eclairage/remplacement-ampoule-luminaire-salon.webp"
 PHOTO_APPAREILLAGE_MUR = "assets/images/prises/raccordement-prises-interrupteurs-mur.webp"
 PHOTO_POSE_PRISE = "assets/images/prises/installation-prise-courant-sejour.webp"
+PHOTO_COMPTEUR_LINKY = ("assets/images/tableau-electrique/"
+                        "intervention-disjoncteur-branchement-compteur.webp")
+
+# Regle : une photo = un seul emplacement. Aucune photo n'est reutilisee
+# a plusieurs endroits du site.
 
 
 def slot(file, alt, width=1200, height=800, caption=None, sujet=None):
@@ -51,44 +56,38 @@ IMAGES = {
         "Électricien fixant un bandeau LED sous les meubles hauts d'une cuisine",
         1536, 1024,
         sujet="Cuisine grise, plan de travail bois : pose d'un ruban LED sous meubles hauts"),
-    # ---- Galerie d'accueil : les photos reelles d'abord
+    # ---- Galerie d'accueil : emplacements dedies.
+    # Aucune photo deja affectee a une page de prestation n'y est reprise :
+    # la galerie attend ses propres prises de vue. La section entiere reste
+    # masquee tant qu'aucune photo n'y est deposee.
     "home_gallery_1": slot(
-        PHOTO_LED_PLAFOND,
-        "Électricien posant un ruban LED dans une corniche de plafond, dans une chambre",
-        1536, 1024,
-        "Éclairage indirect : ruban LED posé en corniche de plafond.",
-        sujet="Chambre, technicien sur escabeau, ruban LED en corniche"),
+        "assets/images/interventions/electricien-chantier-renovation.webp",
+        "Électricien au travail sur un chantier de rénovation", 1200, 800,
+        sujet="PHOTO ATTENDUE : vue d'ensemble d'un chantier en cours"),
     "home_gallery_2": slot(
-        PHOTO_APPAREILLAGE_MUR,
-        "Électricien raccordant une rangée de prises et d'interrupteurs encastrés",
-        1536, 1024,
-        "Raccordement de l'appareillage lors d'une reprise d'installation.",
-        sujet="Rangée de boîtes d'encastrement ouvertes, conducteurs apparents"),
+        "assets/images/depannage/recherche-panne-mesure-isolement.webp",
+        "Mesure d'isolement d'un circuit à l'aide d'un contrôleur", 1200, 800,
+        "La mesure d'isolement permet de localiser un défaut sans démonter.",
+        sujet="PHOTO ATTENDUE : appareil de mesure en main sur un circuit"),
     "home_gallery_3": slot(
-        PHOTO_POSE_PRISE,
-        "Électricien installant une prise de courant dans un séjour",
-        1536, 1024,
-        "Pose d'appareillage : le poste de travail est protégé et les outils sont rangés.",
-        sujet="Séjour, technicien à genoux, boîtes d'encastrement, bâche de protection"),
+        "assets/images/installation/installation-electrique-cablage-circuits.webp",
+        "Câblage de circuits électriques avant fermeture des cloisons", 1200, 800,
+        "Les cheminements se préparent avant la fermeture des cloisons.",
+        sujet="PHOTO ATTENDUE : gaines et conducteurs avant fermeture des cloisons"),
     "home_gallery_4": slot(
-        PHOTO_AMPOULE_SALON,
-        "Électricien remplaçant l'ampoule d'une suspension dans un salon",
-        1536, 1024,
-        "Intervention sur un point lumineux, casque et lunettes de protection.",
-        sujet="Salon, technicien sur escabeau, suspension noire"),
+        "assets/images/renovation/renovation-electrique-maison-ancienne.webp",
+        "Reprise de l'installation électrique dans une maison ancienne", 1200, 800,
+        sujet="PHOTO ATTENDUE : rénovation dans du bâti ancien"),
     "home_gallery_5": slot(
-        PHOTO_LED_CUISINE,
-        "Pose d'un bandeau LED sous les meubles hauts d'une cuisine",
-        1536, 1024,
-        "Éclairage de plan de travail : la lumière est placée là où l'on travaille.",
-        sujet="Cuisine, ruban LED sous meubles hauts"),
-    # ---- Emplacements en attente de photos
+        "assets/images/bornes/installation-borne-recharge-vehicule-electrique.webp",
+        "Borne de recharge murale installée dans un garage", 1200, 800,
+        "Point de recharge raccordé sur un circuit dédié.",
+        sujet="PHOTO ATTENDUE : borne de recharge posée en garage ou en façade"),
     "home_gallery_6": slot(
         "assets/images/tableau-electrique/remplacement-tableau-electrique-chantier.webp",
-        "Électricien intervenant sur un tableau électrique",
-        1200, 800,
+        "Électricien intervenant sur un tableau électrique", 1200, 800,
         "Remplacement d'un tableau : chaque circuit est repéré avant raccordement.",
-        sujet="PHOTO ATTENDUE : intervention sur un tableau électrique"),
+        sujet="PHOTO ATTENDUE : tableau électrique ouvert pendant l'intervention"),
     "before": slot(
         "assets/images/avant-apres/tableau-electrique-avant-renovation.webp",
         "Ancien tableau électrique équipé de fusibles avant remplacement",
@@ -124,10 +123,9 @@ IMAGES = {
         "assets/images/installation/installation-electrique-neuve-tableau.webp",
         "Installation électrique neuve en cours de raccordement", 1200, 800),
     "svc_renovation-electrique": slot(
-        PHOTO_APPAREILLAGE_MUR,
-        "Reprise de l'appareillage électrique d'une pièce lors d'une rénovation",
-        1536, 1024,
-        "Rénovation : reprise des boîtes d'encastrement et de l'appareillage."),
+        "assets/images/renovation/renovation-electrique-passage-circuits.webp",
+        "Passage de nouveaux circuits lors d'une rénovation électrique", 1200, 800,
+        sujet="PHOTO ATTENDUE : passage de gaines ou saignées en rénovation"),
     "svc_mise-aux-normes-electrique": slot(
         "assets/images/renovation/mise-aux-normes-electrique-tableau.webp",
         "Mise en sécurité d'une installation électrique ancienne", 1200, 800),
@@ -138,8 +136,13 @@ IMAGES = {
         "assets/images/tableau-electrique/remplacement-tableau-electrique.webp",
         "Remplacement d'un tableau électrique", 1200, 800),
     "svc_disjoncteur": slot(
-        "assets/images/tableau-electrique/disjoncteur-tableau-electrique.webp",
-        "Disjoncteurs divisionnaires sur un tableau électrique", 1200, 800),
+        PHOTO_COMPTEUR_LINKY,
+        "Électricien intervenant sur le disjoncteur de branchement d'un coffret "
+        "extérieur équipé d'un compteur Linky",
+        1536, 1152,
+        "Le disjoncteur de branchement, situé en amont du tableau, protège "
+        "l'installation dans son ensemble. Toute intervention à ce niveau se fait "
+        "avec casque, gants isolants et outillage isolé."),
     "svc_court-circuit": slot(
         "assets/images/depannage/court-circuit-connexion-endommagee.webp",
         "Connexion électrique endommagée à l'origine d'un défaut", 1200, 800),

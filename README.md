@@ -87,27 +87,33 @@ Ces éléments peuvent être ajoutés quand ils seront vérifiables.
 
 ## Ajouter des photos
 
-Les cinq photos déjà transmises ont été analysées et **affectées à leurs pages** (hero,
-galerie, éclairage, luminaire, prises, interrupteur, rénovation). Il ne manque que les
-fichiers : voir la section 1 de `PHOTOS-A-FOURNIR.md` pour le chemin exact de chacune.
+**Une photo = un seul emplacement.** Aucune photo n'est réutilisée à plusieurs
+endroits du site.
 
-1. Consulter **`PHOTOS-A-FOURNIR.md`** — régénéré à chaque build, il liste les
-   emplacements attendus avec leur chemin exact et le sujet de la photo.
-2. Déposer le fichier au chemin indiqué.
-3. Relancer `python3 tools/build.py`.
+```bash
+cp ma-photo.jpg photos-inbox/svc_eclairage.jpg   # nommer d'après la clé
+python3 tools/photos.py                          # WebP + variantes + mise en place
+python3 tools/build.py                           # régénération du site
+```
 
-La photo remplace automatiquement l'emplacement neutre : aucune modification de
-code n'est nécessaire.
+`python3 tools/photos.py --list` affiche toutes les clés et leur état.
 
-**Variantes responsives** (recommandé) : en déposant à côté du fichier principal
-`nom-480w.webp`, `nom-800w.webp`, `nom-1200w.webp`, `nom-1600w.webp`, un attribut
-`srcset` complet est généré automatiquement.
+Le script corrige l'orientation EXIF, **supprime les métadonnées (coordonnées GPS
+comprises)**, redimensionne à 1600 px, convertit en WebP qualité 82 et génère les
+variantes 480 / 800 / 1200 / 1600 px reprises dans `srcset`. Les dimensions
+inscrites dans le HTML sont lues **dans le fichier livré**, donc le ratio est
+toujours exact et aucun décalage de mise en page ne se produit.
 
-**Textes alternatifs** : ils sont définis dans `tools/content/images.py`. Vérifier
-qu'ils décrivent bien ce que montre la photo réellement fournie. Un `alt` décrit une
-image, il ne contient pas une liste de mots-clés.
+Les six photos déjà transmises sont analysées et affectées : voir la section 1 de
+`PHOTOS-A-FOURNIR.md` pour la clé de chacune.
 
----
+**Textes alternatifs** : définis dans `tools/content/images.py`, rédigés d'après le
+contenu réel de chaque photo. À vérifier si la photo déposée diffère de celle
+décrite.
+
+**Sections masquées tant qu'elles sont vides** : la galerie de chantiers et le bloc
+avant/après de l'accueil n'apparaissent que lorsqu'ils contiennent de vraies photos.
+Le visiteur ne voit jamais d'emplacement en attente.
 
 ## Architecture
 
