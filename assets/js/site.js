@@ -2,31 +2,124 @@
 (function () {
   "use strict";
 
-  /* ---- Menu mobile ---- */
+  /* ---- Navigation : menus deroulants + panneau mobile ---- */
   var toggle = document.querySelector(".nav-toggle");
   var nav = document.getElementById("site-nav");
+  var header = document.getElementById("site-header");
+  var boutonsMenu = [].slice.call(document.querySelectorAll(".nav-btn"));
+  var backdrop = null;
+
+  function bureau() {
+    return window.matchMedia("(min-width: 1140px)").matches;
+  }
+
+  function fermerMenus(sauf) {
+    boutonsMenu.forEach(function (b) {
+      if (b === sauf) return;
+      var panneau = document.getElementById(b.getAttribute("aria-controls"));
+      b.setAttribute("aria-expanded", "false");
+      if (panneau && bureau()) panneau.hidden = true;
+    });
+  }
+
+  /* Sur mobile les panneaux sont des accordeons : toujours dans le flux. */
+  function syncPanneaux() {
+    boutonsMenu.forEach(function (b) {
+      var panneau = document.getElementById(b.getAttribute("aria-controls"));
+      if (!panneau) return;
+      panneau.hidden = bureau() ? b.getAttribute("aria-expanded") !== "true"
+                                : b.getAttribute("aria-expanded") !== "true";
+    });
+  }
+
+  boutonsMenu.forEach(function (b) {
+    var panneau = document.getElementById(b.getAttribute("aria-controls"));
+    b.addEventListener("click", function () {
+      var ouvert = b.getAttribute("aria-expanded") === "true";
+      fermerMenus(b);
+      b.setAttribute("aria-expanded", String(!ouvert));
+      if (panneau) panneau.hidden = ouvert;
+    });
+    /* Ouverture au survol sur grand ecran, sans gener le clavier. */
+    var li = b.parentNode;
+    li.addEventListener("mouseenter", function () {
+      if (!bureau()) return;
+      fermerMenus(b);
+      b.setAttribute("aria-expanded", "true");
+      if (panneau) panneau.hidden = false;
+    });
+    li.addEventListener("mouseleave", function () {
+      if (!bureau()) return;
+      b.setAttribute("aria-expanded", "false");
+      if (panneau) panneau.hidden = true;
+    });
+  });
+
+  document.addEventListener("click", function (e) {
+    if (!bureau()) return;
+    if (!e.target.closest(".has-menu")) fermerMenus(null);
+  });
+
+  function ouvrirNav(ouvrir) {
+    if (!nav || !toggle) return;
+    nav.setAttribute("data-open", String(ouvrir));
+    toggle.setAttribute("aria-expanded", String(ouvrir));
+    document.body.style.overflow = ouvrir ? "hidden" : "";
+    if (ouvrir) {
+      if (!backdrop) {
+        backdrop = document.createElement("button");
+        backdrop.className = "nav-backdrop";
+        backdrop.setAttribute("aria-label", "Fermer le menu");
+        backdrop.addEventListener("click", function () { ouvrirNav(false); });
+        document.body.appendChild(backdrop);
+      }
+      backdrop.hidden = false;
+      if (!nav.querySelector(".nav-close")) {
+        var fermer = document.createElement("button");
+        fermer.className = "nav-close";
+        fermer.type = "button";
+        fermer.setAttribute("aria-label", "Fermer le menu");
+        fermer.innerHTML = "&#10005;";
+        fermer.addEventListener("click", function () { ouvrirNav(false); });
+        nav.insertBefore(fermer, nav.firstChild);
+      }
+    } else if (backdrop) {
+      backdrop.hidden = true;
+    }
+  }
+
   if (toggle && nav) {
     toggle.addEventListener("click", function () {
-      var open = nav.getAttribute("data-open") === "true";
-      nav.setAttribute("data-open", String(!open));
-      toggle.setAttribute("aria-expanded", String(!open));
-      document.body.style.overflow = !open ? "hidden" : "";
+      ouvrirNav(nav.getAttribute("data-open") !== "true");
     });
     nav.addEventListener("click", function (e) {
-      if (e.target.tagName === "A" && window.innerWidth < 1080) {
-        nav.setAttribute("data-open", "false");
-        toggle.setAttribute("aria-expanded", "false");
-        document.body.style.overflow = "";
-      }
+      if (e.target.tagName === "A" && !bureau()) ouvrirNav(false);
     });
-    window.addEventListener("keydown", function (e) {
-      if (e.key === "Escape" && nav.getAttribute("data-open") === "true") {
-        nav.setAttribute("data-open", "false");
-        toggle.setAttribute("aria-expanded", "false");
-        document.body.style.overflow = "";
-        toggle.focus();
-      }
-    });
+  }
+
+  window.addEventListener("keydown", function (e) {
+    if (e.key !== "Escape") return;
+    if (nav && nav.getAttribute("data-open") === "true") {
+      ouvrirNav(false);
+      if (toggle) toggle.focus();
+    } else {
+      var ouvert = document.querySelector('.nav-btn[aria-expanded="true"]');
+      if (ouvert) { fermerMenus(null); ouvert.focus(); }
+    }
+  });
+
+  window.addEventListener("resize", function () {
+    if (bureau() && nav && nav.getAttribute("data-open") === "true") ouvrirNav(false);
+    syncPanneaux();
+  });
+
+  /* Ombre portee de l'en-tete au defilement */
+  if (header) {
+    var majOmbre = function () {
+      header.setAttribute("data-scrolled", String(window.scrollY > 8));
+    };
+    majOmbre();
+    window.addEventListener("scroll", majOmbre, { passive: true });
   }
 
   /* ---- Carte Leaflet : chargee seulement a l'approche du viewport ---- */

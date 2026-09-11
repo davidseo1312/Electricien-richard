@@ -34,11 +34,14 @@
 <body>
 
 <a class="skip-link" href="#main">Aller au contenu principal</a>
+
 <div class="topbar"><div class="container">
-  <span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5Z"/></svg> <strong>Intervention en Bretagne et en Pays de la Loire</strong> — 22 · 29 · 35 · 56 · 44 · 49</span>
-  <span>Un besoin urgent ? <a href="tel:0220060075">02 20 06 00 75</a></span>
+  <p class="topbar-zone"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5Z"/></svg> Artisan électricien — Côtes-d'Armor · Finistère ·
+    Ille-et-Vilaine · Morbihan · Loire-Atlantique · Maine-et-Loire</p>
+  <p class="topbar-arg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true" focusable="false"><path d="M9.6 16.2 5.4 12l-1.4 1.4 5.6 5.6L20.4 8.2 19 6.8Z"/></svg> Devis détaillé, gratuit et sans engagement</p>
 </div></div>
-<header class="site-header">
+
+<header class="site-header" id="site-header">
   <div class="container header-inner">
     <a class="brand" href="/" aria-label="Electricien Richard, accueil"><span class="brand-mark" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="9 11 115 89" width="115" height="89" role="img" aria-label="Electricien Richard">
   <path d="M69.7 18.4 A40 40 0 1 0 42.3 93.6" fill="none" stroke="#FACC15" stroke-width="8.5" stroke-linecap="round"/>
@@ -57,14 +60,57 @@
   
   <path fill="#FACC15" d="M54 21 L33 55.5 L44.5 55.5 L39.5 88 L61 53 L49 53 Z"/>
 </svg></span><span class="brand-text"><span class="brand-l1">ÉLECTRICIEN</span><span class="brand-l2">RICHARD</span><span class="brand-l3">Dépannage · Installation · Rénovation</span></span></a>
-    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span>Menu</span>
-    </button>
+
     <nav class="nav" id="site-nav" aria-label="Navigation principale">
-      <ul><li><a href="/electricien.html">Électricien</a></li><li><a href="/electricien-depannage.html">Dépannage</a></li><li><a href="/electricien-urgence.html">Urgence</a></li><li><a href="/installation-electrique.html">Installation</a></li><li><a href="/renovation-electrique.html">Rénovation</a></li><li><a href="/zones-d-intervention.html">Zones</a></li><li><a href="/tarifs.html">Tarifs</a></li><li><a href="/blog/">Blog</a></li><li><a href="/contact.html">Contact</a></li></ul>
-      <div class="nav-cta"><a class="btn btn--primary" href="tel:0220060075"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M6.6 3h3.1l1.6 4-2 1.4a12.4 12.4 0 0 0 5.3 5.3l1.4-2 4 1.6v3.1c0 1-.8 1.8-1.8 1.6C10.9 17.4 6.6 13.1 5 5.8 4.8 4.8 5.6 3 6.6 3Z"/></svg> Appeler le 02 20 06 00 75</a><a class="btn btn--ghost" href="/devis-electricien.html">Demander un devis</a></div>
+      <ul class="nav-list">
+        <li class="has-menu">
+          <button class="nav-link nav-btn" type="button" aria-expanded="false"
+                  aria-controls="menu-prestations">Prestations <svg class="chev" viewBox="0 0 20 20" width="14" height="14" aria-hidden="true"><path d="M5 7.5 10 12.5 15 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div class="mega" id="menu-prestations" hidden>
+            <div class="container mega-inner">
+              <div class="mega-col"><p class="mega-title">Dépannage</p><ul><li><a href="/electricien-depannage/">Dépannage électrique</a></li><li><a href="/electricien-urgence/">Électricien en urgence</a></li><li><a href="/panne-electrique/">Panne électrique</a></li><li><a href="/recherche-panne/">Recherche de panne</a></li><li><a href="/disjoncteur/">Disjoncteur qui saute</a></li><li><a href="/court-circuit/">Court-circuit</a></li></ul></div><div class="mega-col"><p class="mega-title">Travaux</p><ul><li><a href="/installation-electrique/">Installation électrique</a></li><li><a href="/renovation-electrique/">Rénovation électrique</a></li><li><a href="/mise-aux-normes-electrique/">Mise aux normes</a></li><li><a href="/diagnostic-electrique/">Diagnostic électrique</a></li><li><a href="/tableau-electrique/">Tableau électrique</a></li></ul></div><div class="mega-col"><p class="mega-title">Équipements</p><ul><li><a href="/prise-electrique/">Prise électrique</a></li><li><a href="/interrupteur/">Interrupteur</a></li><li><a href="/eclairage/">Éclairage</a></li><li><a href="/luminaire/">Luminaire</a></li><li><a href="/borne-recharge/">Borne de recharge</a></li><li><a href="/vmc/">VMC</a></li></ul></div>
+              <div class="mega-col mega-col--cta">
+                <p class="mega-title">Besoin d'un avis ?</p>
+                <p class="mega-note">Décrivez votre situation : dépannage, travaux ou
+                simple question sur votre installation.</p>
+                <a class="btn btn--primary btn--sm" href="tel:0220060075"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true" focusable="false"><path d="M6.6 3h3.1l1.6 4-2 1.4a12.4 12.4 0 0 0 5.3 5.3l1.4-2 4 1.6v3.1c0 1-.8 1.8-1.8 1.6C10.9 17.4 6.6 13.1 5 5.8 4.8 4.8 5.6 3 6.6 3Z"/></svg> 02 20 06 00 75</a>
+                <a class="mega-all" href="/electricien/">Toutes les prestations</a>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li class="has-menu">
+          <button class="nav-link nav-btn" type="button" aria-expanded="false"
+                  aria-controls="menu-zones">Zones <svg class="chev" viewBox="0 0 20 20" width="14" height="14" aria-hidden="true"><path d="M5 7.5 10 12.5 15 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div class="mega mega--zones" id="menu-zones" hidden>
+            <div class="container mega-inner">
+              <div class="mega-col mega-col--wide">
+                <p class="mega-title">Départements couverts</p>
+                <ul class="mega-zones"><li><a href="/zones/cotes-d-armor/">Côtes-d&#x27;Armor (22)</a></li><li><a href="/zones/finistere/">Finistère (29)</a></li><li><a href="/zones/ille-et-vilaine/">Ille-et-Vilaine (35)</a></li><li><a href="/zones/morbihan/">Morbihan (56)</a></li><li><a href="/zones/loire-atlantique/">Loire-Atlantique (44)</a></li><li><a href="/zones/maine-et-loire/">Maine-et-Loire (49)</a></li></ul>
+              </div>
+              <div class="mega-col mega-col--cta">
+                <p class="mega-title">Six départements</p>
+                <p class="mega-note">Interventions en Bretagne et en Pays de la Loire
+                uniquement, avec des pages dédiées pour les principales villes.</p>
+                <a class="mega-all" href="/zones-d-intervention/">Voir les zones
+                d'intervention</a>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li><a class="nav-link" href="/tarifs/">Tarifs</a></li><li><a class="nav-link" href="/blog/">Blog</a></li><li><a class="nav-link" href="/a-propos/">À propos</a></li><li><a class="nav-link" href="/contact/">Contact</a></li>
+      </ul>
+      <div class="nav-cta">
+        <a class="btn btn--primary" href="tel:0220060075"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true" focusable="false"><path d="M6.6 3h3.1l1.6 4-2 1.4a12.4 12.4 0 0 0 5.3 5.3l1.4-2 4 1.6v3.1c0 1-.8 1.8-1.8 1.6C10.9 17.4 6.6 13.1 5 5.8 4.8 4.8 5.6 3 6.6 3Z"/></svg> 02 20 06 00 75</a>
+        <a class="btn btn--ghost" href="/devis-electricien/">Demander un devis</a>
+      </div>
     </nav>
-    <a class="btn btn--primary btn--sm header-cta" href="tel:0220060075"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true" focusable="false"><path d="M6.6 3h3.1l1.6 4-2 1.4a12.4 12.4 0 0 0 5.3 5.3l1.4-2 4 1.6v3.1c0 1-.8 1.8-1.8 1.6C10.9 17.4 6.6 13.1 5 5.8 4.8 4.8 5.6 3 6.6 3Z"/></svg> 02 20 06 00 75</a>
+
+    <a class="btn btn--primary header-cta" href="tel:0220060075"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true" focusable="false"><path d="M6.6 3h3.1l1.6 4-2 1.4a12.4 12.4 0 0 0 5.3 5.3l1.4-2 4 1.6v3.1c0 1-.8 1.8-1.8 1.6C10.9 17.4 6.6 13.1 5 5.8 4.8 4.8 5.6 3 6.6 3Z"/></svg> <span>02 20 06 00 75</span></a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+      <span class="nav-toggle-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="nav-toggle-label">Menu</span>
+    </button>
   </div>
 </header>
 <nav class="breadcrumb" aria-label="Fil d'Ariane"><div class="container"><ol><li><a href="/">Accueil</a></li><li><a href="/blog/">Blog</a></li><li><span aria-current="page">Dépannage électrique</span></li></ol></div></nav>
@@ -79,7 +125,7 @@
 </div></section>
 
 <section class="section"><div class="container">
-  <div class="grid grid--3"><article class="article-card"><figure><div class="media-placeholder" role="img" aria-label="Emplacement réservé à une photo : Que faire en cas de panne électrique ?" style="aspect-ratio:1200/675"><b>Photo à venir</b><span>Que faire en cas de panne électrique ?</span></div></figure><div class="body"><p class="cat">Dépannage électrique</p><h3><a href="/blog/depannage-electrique/que-faire-en-cas-de-panne-electrique.html">Que faire en cas de panne électrique ? La marche à suivre</a></h3><p>Face à une coupure, quelques vérifications simples permettent souvent de situer l&#x27;origine du problème — et parfois de le résoudre — avant même d&#x27;appeler.</p><p class="meta">Publié le 4 mars 2026</p></div></article><article class="article-card"><figure><div class="media-placeholder" role="img" aria-label="Emplacement réservé à une photo : Pourquoi mon disjoncteur saute ?" style="aspect-ratio:1200/675"><b>Photo à venir</b><span>Pourquoi mon disjoncteur saute ?</span></div></figure><div class="body"><p class="cat">Dépannage électrique</p><h3><a href="/blog/depannage-electrique/pourquoi-mon-disjoncteur-saute.html">Pourquoi mon disjoncteur saute ? Les 6 causes réelles</a></h3><p>Un disjoncteur qui déclenche n&#x27;est pas un caprice : c&#x27;est une protection qui fait exactement ce qu&#x27;on attend d&#x27;elle. La vraie question est de savoir ce qu&#x27;elle signale.</p><p class="meta">Publié le 12 février 2026</p></div></article></div>
+  <div class="grid grid--3"><article class="article-card"><figure><div class="media-placeholder" role="img" aria-label="Emplacement réservé à une photo : Que faire en cas de panne électrique ?" style="aspect-ratio:1200/675"><b>Photo à venir</b><span>Que faire en cas de panne électrique ?</span></div></figure><div class="body"><p class="cat">Dépannage électrique</p><h3><a href="/blog/depannage-electrique/que-faire-en-cas-de-panne-electrique/">Que faire en cas de panne électrique ? La marche à suivre</a></h3><p>Face à une coupure, quelques vérifications simples permettent souvent de situer l&#x27;origine du problème — et parfois de le résoudre — avant même d&#x27;appeler.</p><p class="meta">Publié le 4 mars 2026</p></div></article><article class="article-card"><figure><div class="media-placeholder" role="img" aria-label="Emplacement réservé à une photo : Pourquoi mon disjoncteur saute ?" style="aspect-ratio:1200/675"><b>Photo à venir</b><span>Pourquoi mon disjoncteur saute ?</span></div></figure><div class="body"><p class="cat">Dépannage électrique</p><h3><a href="/blog/depannage-electrique/pourquoi-mon-disjoncteur-saute/">Pourquoi mon disjoncteur saute ? Les 6 causes réelles</a></h3><p>Un disjoncteur qui déclenche n&#x27;est pas un caprice : c&#x27;est une protection qui fait exactement ce qu&#x27;on attend d&#x27;elle. La vraie question est de savoir ce qu&#x27;elle signale.</p><p class="meta">Publié le 12 février 2026</p></div></article></div>
 </div></section>
 
 <section class="section section--soft"><div class="container">
@@ -87,7 +133,7 @@
   <ul class="link-cloud"><li><a href="/blog/installation-electrique/">Installation électrique</a></li><li><a href="/blog/renovation/">Rénovation</a></li><li><a href="/blog/securite-electrique/">Sécurité électrique</a></li><li><a href="/blog/conseils/">Conseils</a></li><li><a href="/blog/prix/">Prix</a></li><li><a href="/blog/bornes-de-recharge/">Bornes de recharge</a></li><li><a href="/blog/guide-local/">Guide local</a></li></ul>
 </div></section>
 
-<section class="section"><div class="container"><div class="cta-band"><div><h2>Besoin d&#x27;un électricien ?</h2><p>Dépannage, travaux ou question sur votre installation : décrivez votre situation.</p></div><div class="btn-row"><a class="btn btn--primary" href="tel:0220060075"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M6.6 3h3.1l1.6 4-2 1.4a12.4 12.4 0 0 0 5.3 5.3l1.4-2 4 1.6v3.1c0 1-.8 1.8-1.8 1.6C10.9 17.4 6.6 13.1 5 5.8 4.8 4.8 5.6 3 6.6 3Z"/></svg> Appeler le 02 20 06 00 75</a><a class="btn btn--outline-light" href="/devis-electricien.html">Demander un devis</a></div></div></div></section>
+<section class="section"><div class="container"><div class="cta-band"><div><h2>Besoin d&#x27;un électricien ?</h2><p>Dépannage, travaux ou question sur votre installation : décrivez votre situation.</p></div><div class="btn-row"><a class="btn btn--primary" href="tel:0220060075"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M6.6 3h3.1l1.6 4-2 1.4a12.4 12.4 0 0 0 5.3 5.3l1.4-2 4 1.6v3.1c0 1-.8 1.8-1.8 1.6C10.9 17.4 6.6 13.1 5 5.8 4.8 4.8 5.6 3 6.6 3Z"/></svg> Appeler le 02 20 06 00 75</a><a class="btn btn--outline-light" href="/devis-electricien/">Demander un devis</a></div></div></div></section>
 
 </main>
 
@@ -117,16 +163,16 @@
         la Loire-Atlantique et le Maine-et-Loire.</p>
         <p class="footer-contact"><strong><a href="tel:0220060075">02 20 06 00 75</a></strong></p>
       </div>
-      <div><h2>Prestations</h2><ul><li><a href="/electricien-depannage.html">Dépannage électrique</a></li><li><a href="/electricien-urgence.html">Électricien en urgence</a></li><li><a href="/recherche-panne.html">Recherche de panne</a></li><li><a href="/installation-electrique.html">Installation électrique</a></li><li><a href="/renovation-electrique.html">Rénovation électrique</a></li><li><a href="/mise-aux-normes-electrique.html">Mise aux normes</a></li><li><a href="/tableau-electrique.html">Tableau électrique</a></li><li><a href="/borne-recharge.html">Borne de recharge</a></li></ul></div>
+      <div><h2>Prestations</h2><ul><li><a href="/electricien-depannage/">Dépannage électrique</a></li><li><a href="/electricien-urgence/">Électricien en urgence</a></li><li><a href="/recherche-panne/">Recherche de panne</a></li><li><a href="/installation-electrique/">Installation électrique</a></li><li><a href="/renovation-electrique/">Rénovation électrique</a></li><li><a href="/mise-aux-normes-electrique/">Mise aux normes</a></li><li><a href="/tableau-electrique/">Tableau électrique</a></li><li><a href="/borne-recharge/">Borne de recharge</a></li></ul></div>
       <div><h2>Départements</h2><ul><li><a href="/zones/cotes-d-armor/">Côtes-d&#x27;Armor (22)</a></li><li><a href="/zones/finistere/">Finistère (29)</a></li><li><a href="/zones/ille-et-vilaine/">Ille-et-Vilaine (35)</a></li><li><a href="/zones/morbihan/">Morbihan (56)</a></li><li><a href="/zones/loire-atlantique/">Loire-Atlantique (44)</a></li><li><a href="/zones/maine-et-loire/">Maine-et-Loire (49)</a></li></ul></div>
-      <div><h2>Informations</h2><ul><li><a href="/a-propos.html">À propos</a></li><li><a href="/tarifs.html">Tarifs et devis</a></li><li><a href="/faq.html">Questions fréquentes</a></li><li><a href="/zones-d-intervention.html">Zones d&#x27;intervention</a></li><li><a href="/blog/">Blog</a></li><li><a href="/contact.html">Contact</a></li></ul></div>
+      <div><h2>Informations</h2><ul><li><a href="/a-propos/">À propos</a></li><li><a href="/tarifs/">Tarifs et devis</a></li><li><a href="/faq/">Questions fréquentes</a></li><li><a href="/zones-d-intervention/">Zones d&#x27;intervention</a></li><li><a href="/blog/">Blog</a></li><li><a href="/contact/">Contact</a></li></ul></div>
     </div>
     <div class="footer-bottom">
       <span>© 2026 Electricien Richard — electricien-richard.fr</span>
       <ul>
-        <li><a href="/mentions-legales.html">Mentions légales</a></li>
-        <li><a href="/politique-de-confidentialite.html">Politique de confidentialité</a></li>
-        <li><a href="/plan-du-site.html">Plan du site</a></li>
+        <li><a href="/mentions-legales/">Mentions légales</a></li>
+        <li><a href="/politique-de-confidentialite/">Politique de confidentialité</a></li>
+        <li><a href="/plan-du-site/">Plan du site</a></li>
       </ul>
     </div>
   </div>
@@ -134,7 +180,7 @@
 <nav class="sticky-cta" aria-label="Contact rapide">
   <a class="btn btn--primary" href="tel:0220060075" aria-label="Appeler le 02 20 06 00 75"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true" focusable="false"><path d="M6.6 3h3.1l1.6 4-2 1.4a12.4 12.4 0 0 0 5.3 5.3l1.4-2 4 1.6v3.1c0 1-.8 1.8-1.8 1.6C10.9 17.4 6.6 13.1 5 5.8 4.8 4.8 5.6 3 6.6 3Z"/></svg>
     <span class="sticky-num">02 20 06 00 75</span><span class="sticky-short">Appeler</span></a>
-  <a class="btn btn--dark" href="/devis-electricien.html">Demander un devis</a>
+  <a class="btn btn--dark" href="/devis-electricien/">Demander un devis</a>
 </nav>
 <script src="/assets/js/site.js" defer></script>
 </body>

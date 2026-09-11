@@ -17,7 +17,7 @@ from datetime import date
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from render import (ROOT, esc, abs_url, url_for, picture, has_photo, icon, phone_link, quick_answer,
+from render import (ROOT, esc, abs_url, url_for, disk_path, picture, has_photo, icon, phone_link, quick_answer,
                     table, callout, steps_block, checks, faq_block, cta_band, cta_inline,
                     link_cloud, map_block, faq_node, render_page, MISSING_IMAGES,
                     BUSINESS_ID, geo_card)
@@ -36,7 +36,7 @@ SERVICE_BY_SLUG = {s["slug"]: s for s in SERVICES}
 
 # --------------------------------------------------------------- utilitaires
 def write(path, html, indexable=True, priority="0.6", changefreq="monthly"):
-    full = os.path.join(ROOT, path)
+    full = os.path.join(ROOT, disk_path(path))
     os.makedirs(os.path.dirname(full), exist_ok=True)
     with open(full, "w", encoding="utf-8") as fh:
         fh.write(html)
@@ -387,10 +387,10 @@ def build_zone_pages():
 <title>Zones d'intervention — Electricien Richard</title>
 <meta name="robots" content="noindex, follow">
 <link rel="canonical" href="%s">
-<meta http-equiv="refresh" content="0; url=/zones-d-intervention.html">
+<meta http-equiv="refresh" content="0; url=/zones-d-intervention/">
 </head><body><p>Cette page a été déplacée :
-<a href="/zones-d-intervention.html">zones d'intervention</a>.</p></body></html>
-""" % abs_url("/zones-d-intervention.html")
+<a href="/zones-d-intervention/">zones d'intervention</a>.</p></body></html>
+""" % abs_url("/zones-d-intervention/")
     write("zones/index.html", redirect, indexable=False)
 
     # --- Pages departements ----------------------------------------------
@@ -1969,7 +1969,6 @@ def build_robots():
 User-agent: *
 Allow: /
 Disallow: /tools/
-Disallow: /zones/index.html
 
 # Moteurs de recherche generatifs et assistants IA : acces autorise
 User-agent: GPTBot
@@ -2100,7 +2099,21 @@ def build_photo_report():
 
 
 def build_htaccess():
-    txt = """# electricien-richard.fr - compression, cache et page 404
+    txt = """# electricien-richard.fr
+
+RewriteEngine On
+
+# --- URL sans extension -------------------------------------------------
+# Les anciennes adresses en .html sont redirigees definitivement vers les
+# nouvelles, afin de conserver le referencement acquis.
+RewriteCond %{THE_REQUEST} \\s/+(.+?)\\.html[\\s?] [NC]
+RewriteCond %{REQUEST_URI} !^/404\\.html$
+RewriteRule ^ /%1/ [R=301,L]
+
+# Sert /electricien/ depuis electricien/index.html (comportement par defaut
+# d'Apache) ; DirectorySlash ajoute la barre finale manquante.
+DirectorySlash On
+
 ErrorDocument 404 /404.html
 
 <IfModule mod_deflate.c>
@@ -2115,6 +2128,7 @@ ErrorDocument 404 /404.html
   ExpiresByType application/javascript "access plus 1 year"
   ExpiresByType image/webp "access plus 1 year"
   ExpiresByType image/avif "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
   ExpiresByType image/svg+xml "access plus 1 year"
   ExpiresByType text/html "access plus 1 hour"
 </IfModule>

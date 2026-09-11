@@ -16,17 +16,42 @@ def esc(txt):
 
 
 def abs_url(path):
-    """/electricien.html -> https://electricien-richard.fr/electricien.html"""
+    """Chemin -> URL absolue, normalisee sans extension .html.
+
+    Point de passage unique : canonical, Open Graph, fil d'Ariane et donnees
+    structurees produisent ainsi tous la meme forme d'URL.
+    """
     if path.startswith("http"):
         return path
     if not path.startswith("/"):
         path = "/" + path
+    if path.endswith(".html") and path != "/404.html":
+        path = path[: -len(".html")] + "/"
     return SITE["base_url"] + path
 
 
-def url_for(path):
-    """Chemin de fichier -> URL servie (index.html devient un repertoire)."""
+# Pages servies telles quelles, sans reecriture en repertoire
+PAGES_PLATES = {"404.html"}
+
+
+def disk_path(path):
+    """Chemin sur disque : une page .html devient un repertoire + index.html.
+
+    electricien.html            -> electricien/index.html      (URL /electricien/)
+    blog/cat/article.html       -> blog/cat/article/index.html
+    index.html, 404.html        -> inchanges
+    """
     path = path.lstrip("/")
+    if path in PAGES_PLATES or path == "index.html" or path.endswith("/index.html"):
+        return path
+    if path.endswith(".html"):
+        return path[: -len(".html")] + "/index.html"
+    return path
+
+
+def url_for(path):
+    """Chemin de fichier -> URL servie, sans extension .html."""
+    path = disk_path(path)
     if path == "index.html":
         return "/"
     if path.endswith("/index.html"):
@@ -380,18 +405,6 @@ def breadcrumb_html(trail):
 
 
 # ------------------------------------------------------------- layout ------
-NAV_LINKS = [
-    ("Électricien", "/electricien.html"),
-    ("Dépannage", "/electricien-depannage.html"),
-    ("Urgence", "/electricien-urgence.html"),
-    ("Installation", "/installation-electrique.html"),
-    ("Rénovation", "/renovation-electrique.html"),
-    ("Zones", "/zones-d-intervention.html"),
-    ("Tarifs", "/tarifs.html"),
-    ("Blog", "/blog/"),
-    ("Contact", "/contact.html"),
-]
-
 # ---------------------------------------------------------------- marque ---
 LOGO_DIR = "assets/images/logo"
 MARQUE_SVG_PATH = os.path.join(LOGO_DIR, "electricien-richard-marque.svg")
@@ -465,35 +478,143 @@ def brand_lockup(hauteur=42, inverse=False):
         % (MARQUE_INVERSE if inverse else MARQUE, cls))
 
 
+# --------------------------------------------------------------- navigation
+# Menus deroulants : les prestations sont regroupees par intention plutot
+# qu'alignees a plat dans la barre.
+MENU_PRESTATIONS = [
+    ("Dépannage", [
+        ("Dépannage électrique", "/electricien-depannage.html"),
+        ("Électricien en urgence", "/electricien-urgence.html"),
+        ("Panne électrique", "/panne-electrique.html"),
+        ("Recherche de panne", "/recherche-panne.html"),
+        ("Disjoncteur qui saute", "/disjoncteur.html"),
+        ("Court-circuit", "/court-circuit.html"),
+    ]),
+    ("Travaux", [
+        ("Installation électrique", "/installation-electrique.html"),
+        ("Rénovation électrique", "/renovation-electrique.html"),
+        ("Mise aux normes", "/mise-aux-normes-electrique.html"),
+        ("Diagnostic électrique", "/diagnostic-electrique.html"),
+        ("Tableau électrique", "/tableau-electrique.html"),
+    ]),
+    ("Équipements", [
+        ("Prise électrique", "/prise-electrique.html"),
+        ("Interrupteur", "/interrupteur.html"),
+        ("Éclairage", "/eclairage.html"),
+        ("Luminaire", "/luminaire.html"),
+        ("Borne de recharge", "/borne-recharge.html"),
+        ("VMC", "/vmc.html"),
+    ]),
+]
+
+MENU_ZONES = [
+    ("Côtes-d'Armor (22)", "/zones/cotes-d-armor/"),
+    ("Finistère (29)", "/zones/finistere/"),
+    ("Ille-et-Vilaine (35)", "/zones/ille-et-vilaine/"),
+    ("Morbihan (56)", "/zones/morbihan/"),
+    ("Loire-Atlantique (44)", "/zones/loire-atlantique/"),
+    ("Maine-et-Loire (49)", "/zones/maine-et-loire/"),
+]
+
+NAV_SIMPLE = [
+    ("Tarifs", "/tarifs.html"),
+    ("Blog", "/blog/"),
+    ("À propos", "/a-propos.html"),
+    ("Contact", "/contact.html"),
+]
+
+CHEVRON = ('<svg class="chev" viewBox="0 0 20 20" width="14" height="14" aria-hidden="true">'
+           '<path d="M5 7.5 10 12.5 15 7.5" fill="none" stroke="currentColor" '
+           'stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>')
+
+
 def header(current_url):
-    nav_items = []
-    for label, href in NAV_LINKS:
-        cur = ' aria-current="page"' if href == current_url else ""
-        nav_items.append('<li><a href="%s"%s>%s</a></li>' % (href, cur, esc(label)))
+    def actif(href):
+        return ' aria-current="page"' if href == current_url else ""
+
+    colonnes = "".join(
+        '<div class="mega-col"><p class="mega-title">%s</p><ul>%s</ul></div>'
+        % (esc(titre),
+           "".join('<li><a href="%s"%s>%s</a></li>' % (h, actif(h), esc(l))
+                   for l, h in liens))
+        for titre, liens in MENU_PRESTATIONS)
+
+    zones = "".join('<li><a href="%s"%s>%s</a></li>' % (h, actif(h), esc(l))
+                    for l, h in MENU_ZONES)
+
+    simples = "".join('<li><a class="nav-link" href="%s"%s>%s</a></li>'
+                      % (h, actif(h), esc(l)) for l, h in NAV_SIMPLE)
+
     return """
 <a class="skip-link" href="#main">Aller au contenu principal</a>
+
 <div class="topbar"><div class="container">
-  <span>%s <strong>Intervention en Bretagne et en Pays de la Loire</strong> — 22 · 29 · 35 · 56 · 44 · 49</span>
-  <span>Un besoin urgent ? <a href="tel:%s">%s</a></span>
+  <p class="topbar-zone">%s Artisan électricien — Côtes-d'Armor · Finistère ·
+    Ille-et-Vilaine · Morbihan · Loire-Atlantique · Maine-et-Loire</p>
+  <p class="topbar-arg">%s Devis détaillé, gratuit et sans engagement</p>
 </div></div>
-<header class="site-header">
+
+<header class="site-header" id="site-header">
   <div class="container header-inner">
     <a class="brand" href="/" aria-label="Electricien Richard, accueil">%s</a>
-    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
-      %s<span>Menu</span>
-    </button>
+
     <nav class="nav" id="site-nav" aria-label="Navigation principale">
-      <ul>%s</ul>
-      <div class="nav-cta">%s<a class="btn btn--ghost" href="/devis-electricien.html">Demander un devis</a></div>
+      <ul class="nav-list">
+        <li class="has-menu">
+          <button class="nav-link nav-btn" type="button" aria-expanded="false"
+                  aria-controls="menu-prestations">Prestations %s</button>
+          <div class="mega" id="menu-prestations" hidden>
+            <div class="container mega-inner">
+              %s
+              <div class="mega-col mega-col--cta">
+                <p class="mega-title">Besoin d'un avis ?</p>
+                <p class="mega-note">Décrivez votre situation : dépannage, travaux ou
+                simple question sur votre installation.</p>
+                <a class="btn btn--primary btn--sm" href="tel:%s">%s %s</a>
+                <a class="mega-all" href="/electricien.html">Toutes les prestations</a>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li class="has-menu">
+          <button class="nav-link nav-btn" type="button" aria-expanded="false"
+                  aria-controls="menu-zones">Zones %s</button>
+          <div class="mega mega--zones" id="menu-zones" hidden>
+            <div class="container mega-inner">
+              <div class="mega-col mega-col--wide">
+                <p class="mega-title">Départements couverts</p>
+                <ul class="mega-zones">%s</ul>
+              </div>
+              <div class="mega-col mega-col--cta">
+                <p class="mega-title">Six départements</p>
+                <p class="mega-note">Interventions en Bretagne et en Pays de la Loire
+                uniquement, avec des pages dédiées pour les principales villes.</p>
+                <a class="mega-all" href="/zones-d-intervention.html">Voir les zones
+                d'intervention</a>
+              </div>
+            </div>
+          </div>
+        </li>
+        %s
+      </ul>
+      <div class="nav-cta">
+        <a class="btn btn--primary" href="tel:%s">%s %s</a>
+        <a class="btn btn--ghost" href="/devis-electricien.html">Demander un devis</a>
+      </div>
     </nav>
-    <a class="btn btn--primary btn--sm header-cta" href="tel:%s">%s %s</a>
+
+    <a class="btn btn--primary header-cta" href="tel:%s">%s <span>%s</span></a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+      <span class="nav-toggle-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="nav-toggle-label">Menu</span>
+    </button>
   </div>
 </header>""" % (
-        icon("map", 16), SITE["phone_tel"], SITE["phone_display"], brand_lockup(44),
-        icon("bolt", 18) if False else
-        '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" '
-        'stroke-width="2.4" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>',
-        "".join(nav_items), phone_link(classes="btn btn--primary"),
+        icon("map", 14), icon("check", 14), brand_lockup(44),
+        CHEVRON, colonnes,
+        SITE["phone_tel"], icon("phone", 18), SITE["phone_display"],
+        CHEVRON, zones, simples,
+        SITE["phone_tel"], icon("phone", 18), SITE["phone_display"],
         SITE["phone_tel"], icon("phone", 18), SITE["phone_display"])
 
 
@@ -666,7 +787,7 @@ def render_page(path, title, description, content, trail=None, schema_nodes=None
     if schema_nodes:
         graph.extend(schema_nodes)
 
-    return PAGE_TPL.format(
+    html_final = PAGE_TPL.format(
         fonts=font_head(),
         title=esc(title),
         og_title=esc(og_title or title),
@@ -685,3 +806,9 @@ def render_page(path, title, description, content, trail=None, schema_nodes=None
         content=content,
         footer=footer(),
     )
+    # Les contenus sont rediges avec des liens en .html : ils sont convertis
+    # ici vers les URL propres, en un seul point de passage.
+    return re.sub(r'href="/([^"]+)\.html"',
+                  lambda m: 'href="/404.html"' if m.group(1) == "404"
+                  else 'href="/%s/"' % m.group(1),
+                  html_final)

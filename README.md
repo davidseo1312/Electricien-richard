@@ -145,15 +145,25 @@ python3 tools/build.py
 ## Architecture
 
 ```
-/                             pages de prestations (électricien.html, tableau-electrique.html…)
-/zones/<département>/         page pilier départementale
-/zones/<département>/<ville>/ page ville
-/blog/                        index du blog
-/blog/<catégorie>/            page catégorie
-/blog/<catégorie>/<article>   article
-/assets/css | js | images     ressources
-/tools/                       générateur (non publié — exclu par robots.txt)
+/electricien/                  prestations (un répertoire par page, sans .html)
+/zones/<département>/          page pilier départementale
+/zones/<département>/<ville>/  page ville
+/blog/                         index du blog
+/blog/<catégorie>/             page catégorie
+/blog/<catégorie>/<article>/   article
+/assets/css | js | images      ressources
+/tools/                        générateur (non publié — exclu par robots.txt)
 ```
+
+### URLs sans extension
+
+Les pages sont écrites en `nom/index.html` et servies sur `/nom/`. Le contenu
+reste rédigé avec des liens en `.html` : la conversion est faite en un seul point
+de passage au moment du rendu (`render_page`), et `abs_url()` normalise de la même
+façon les canoniques, l'Open Graph, le fil d'Ariane et les données structurées.
+
+Les anciennes adresses `/nom.html` sont redirigées en **301** vers `/nom/` par une
+règle unique du `.htaccess`, afin de conserver le référencement déjà acquis.
 
 ### Fichiers du générateur
 

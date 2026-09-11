@@ -1,4 +1,18 @@
-# electricien-richard.fr - compression, cache et page 404
+# electricien-richard.fr
+
+RewriteEngine On
+
+# --- URL sans extension -------------------------------------------------
+# Les anciennes adresses en .html sont redirigees definitivement vers les
+# nouvelles, afin de conserver le referencement acquis.
+RewriteCond %{THE_REQUEST} \s/+(.+?)\.html[\s?] [NC]
+RewriteCond %{REQUEST_URI} !^/404\.html$
+RewriteRule ^ /%1/ [R=301,L]
+
+# Sert /electricien/ depuis electricien/index.html (comportement par defaut
+# d'Apache) ; DirectorySlash ajoute la barre finale manquante.
+DirectorySlash On
+
 ErrorDocument 404 /404.html
 
 <IfModule mod_deflate.c>
@@ -13,6 +27,7 @@ ErrorDocument 404 /404.html
   ExpiresByType application/javascript "access plus 1 year"
   ExpiresByType image/webp "access plus 1 year"
   ExpiresByType image/avif "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
   ExpiresByType image/svg+xml "access plus 1 year"
   ExpiresByType text/html "access plus 1 hour"
 </IfModule>

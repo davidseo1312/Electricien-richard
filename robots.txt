@@ -2,7 +2,6 @@
 User-agent: *
 Allow: /
 Disallow: /tools/
-Disallow: /zones/index.html
 
 # Moteurs de recherche generatifs et assistants IA : acces autorise
 User-agent: GPTBot
