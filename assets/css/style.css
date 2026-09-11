@@ -111,9 +111,26 @@ hr{border:0;border-top:1px solid var(--border);margin:2.5rem 0}
 /* ---------- Header ---------- */
 .site-header{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
 .header-inner{display:flex;align-items:center;gap:1rem;min-height:72px}
-.brand{display:flex;align-items:center;gap:.6rem;font-weight:900;font-size:1.08rem;color:var(--dark);text-decoration:none;letter-spacing:-.02em}
-.brand svg{flex:none}
-.brand span small{display:block;font-size:.68rem;font-weight:600;color:var(--text-secondary);letter-spacing:.01em}
+/* ---------- Marque ---------- */
+.brand{display:flex;align-items:center;gap:.65rem;text-decoration:none;color:var(--dark)}
+.brand-logo{display:block;height:44px;width:auto;max-width:min(58vw,300px)}
+.brand-mark{flex:none;display:block;line-height:0}
+.brand-mark svg{display:block;height:46px;width:auto}
+.brand-text{display:flex;flex-direction:column;line-height:1;letter-spacing:-.01em}
+.brand-l1{font-size:.94rem;font-weight:800;color:var(--dark);letter-spacing:.02em}
+.brand-l2{font-size:1.22rem;font-weight:900;color:var(--yellow-dark);letter-spacing:.01em;margin-top:.06em}
+.brand-l3{font-size:.6rem;font-weight:600;color:var(--text-secondary);letter-spacing:.02em;margin-top:.25em;white-space:nowrap}
+.brand-text--inverse .brand-l1{color:#fff}
+.brand-text--inverse .brand-l2{color:var(--yellow-primary)}
+.brand-text--inverse .brand-l3{color:#94A3B8}
+.brand--footer{margin-bottom:1rem}
+.brand--footer .brand-mark svg{height:42px;width:auto}
+@media (max-width:400px){
+  .brand-mark svg{height:38px}
+  .brand-l1{font-size:.8rem}
+  .brand-l2{font-size:1.05rem}
+  .brand-l3{display:none}
+}
 .nav{margin-left:auto}
 .nav ul{display:flex;gap:.15rem;list-style:none;margin:0;padding:0}
 .nav a{display:block;padding:.6rem .75rem;border-radius:10px;font-size:.94rem;font-weight:600;color:var(--text);text-decoration:none}

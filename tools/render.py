@@ -392,11 +392,77 @@ NAV_LINKS = [
     ("Contact", "/contact.html"),
 ]
 
-LOGO_SVG = (
-    '<svg width="34" height="34" viewBox="0 0 40 40" aria-hidden="true" focusable="false">'
-    '<rect width="40" height="40" rx="10" fill="#111827"/>'
-    '<path d="M22.5 8 14 22h5.2l-1.7 10L27 17.5h-5.4L22.5 8Z" fill="#FACC15"/></svg>'
-)
+# ---------------------------------------------------------------- marque ---
+LOGO_DIR = "assets/images/logo"
+MARQUE_SVG_PATH = os.path.join(LOGO_DIR, "electricien-richard-marque.svg")
+
+
+def _lire_marque():
+    """Marque vectorielle inline : une seule source de verite, aucun requete HTTP."""
+    chemin = os.path.join(ROOT, MARQUE_SVG_PATH)
+    if os.path.exists(chemin):
+        svg = open(chemin, encoding="utf-8").read()
+        svg = re.sub(r"<\?xml.*?\?>|<!--.*?-->", "", svg, flags=re.S)
+        return svg.strip()
+    return ""
+
+
+MARQUE = _lire_marque()
+# Version pour fonds sombres : les elements anthracite passent en blanc,
+# sans quoi le R, le cable et la prise disparaissent dans le pied de page.
+MARQUE_INVERSE = MARQUE.replace("#111827", "#FFFFFF")
+
+
+def svg_dimensions(path):
+    """Largeur/hauteur d'un SVG, depuis les attributs ou le viewBox."""
+    try:
+        head = open(path, encoding="utf-8").read(1200)
+    except Exception:                                   # noqa: BLE001
+        return None
+    w = re.search(r'\swidth="([\d.]+)', head)
+    h = re.search(r'\sheight="([\d.]+)', head)
+    if w and h:
+        return float(w.group(1)), float(h.group(1))
+    vb = re.search(r'viewBox="[\d.\-]+\s+[\d.\-]+\s+([\d.]+)\s+([\d.]+)"', head)
+    if vb:
+        return float(vb.group(1)), float(vb.group(2))
+    return None
+
+
+def logo_fichier():
+    """Logo fourni par le client, s'il a ete depose. Prioritaire sur la marque."""
+    for ext in ("svg", "webp", "png", "jpg"):
+        rel = "%s/electricien-richard-logo.%s" % (LOGO_DIR, ext)
+        if os.path.exists(os.path.join(ROOT, rel)):
+            return rel
+    return None
+
+
+def brand_lockup(hauteur=42, inverse=False):
+    """Bloc de marque de l'en-tete et du pied de page.
+
+    Si le logo complet du client est present dans assets/images/logo/, il est
+    utilise tel quel. Sinon, la marque vectorielle est affichee a cote du nom,
+    compose en texte reel (lisible par les moteurs et les lecteurs d'ecran).
+    """
+    fichier = logo_fichier()
+    if fichier:
+        dims = (svg_dimensions(os.path.join(ROOT, fichier)) if fichier.endswith(".svg")
+                else webp_size(os.path.join(ROOT, fichier)))
+        attrs = ""
+        if dims:
+            ratio = dims[0] / dims[1]
+            attrs = ' width="%d" height="%d"' % (round(hauteur * ratio), hauteur)
+        return ('<img class="brand-logo" src="/%s" alt="Electricien Richard"%s '
+                'decoding="async">' % (fichier, attrs))
+
+    cls = " brand-text--inverse" if inverse else ""
+    return (
+        '<span class="brand-mark" aria-hidden="true">%s</span>'
+        '<span class="brand-text%s"><span class="brand-l1">ÉLECTRICIEN</span>'
+        '<span class="brand-l2">RICHARD</span>'
+        '<span class="brand-l3">Dépannage · Installation · Rénovation</span></span>'
+        % (MARQUE_INVERSE if inverse else MARQUE, cls))
 
 
 def header(current_url):
@@ -412,7 +478,7 @@ def header(current_url):
 </div></div>
 <header class="site-header">
   <div class="container header-inner">
-    <a class="brand" href="/">%s<span>Electricien Richard<small>Dépannage · Installation · Rénovation</small></span></a>
+    <a class="brand" href="/" aria-label="Electricien Richard, accueil">%s</a>
     <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
       %s<span>Menu</span>
     </button>
@@ -423,7 +489,7 @@ def header(current_url):
     <a class="btn btn--primary btn--sm header-cta" href="tel:%s">%s %s</a>
   </div>
 </header>""" % (
-        icon("map", 16), SITE["phone_tel"], SITE["phone_display"], LOGO_SVG,
+        icon("map", 16), SITE["phone_tel"], SITE["phone_display"], brand_lockup(44),
         icon("bolt", 18) if False else
         '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" '
         'stroke-width="2.4" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>',
@@ -471,7 +537,7 @@ def footer():
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
-        <a class="brand" href="/" style="color:#fff">%s<span style="color:#fff">Electricien Richard</span></a>
+        <a class="brand brand--footer" href="/" aria-label="Electricien Richard, accueil">%s</a>
         <p>Artisan électricien intervenant chez les particuliers, les commerces et les
         professionnels dans les Côtes-d'Armor, le Finistère, l'Ille-et-Vilaine, le Morbihan,
         la Loire-Atlantique et le Maine-et-Loire.</p>
@@ -495,7 +561,7 @@ def footer():
   <a class="btn btn--primary" href="tel:%s" aria-label="Appeler le %s">%s
     <span class="sticky-num">%s</span><span class="sticky-short">Appeler</span></a>
   <a class="btn btn--dark" href="/devis-electricien.html">Demander un devis</a>
-</nav>""" % (LOGO_SVG, "".join(contact_bits), ul(FOOTER_SERVICES), ul(FOOTER_ZONES),
+</nav>""" % (brand_lockup(40, inverse=True), "".join(contact_bits), ul(FOOTER_SERVICES), ul(FOOTER_ZONES),
              ul(FOOTER_INFO), 2026, SITE["phone_tel"], SITE["phone_display"],
              icon("phone", 18), SITE["phone_display"])
 
@@ -553,6 +619,7 @@ PAGE_TPL = """<!DOCTYPE html>
 <meta name="twitter:description" content="{description}">
 <meta name="twitter:image" content="{og_image}">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/images/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png">
 {fonts}
 <link rel="stylesheet" href="/assets/css/style.css">

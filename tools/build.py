@@ -1999,25 +1999,17 @@ Sitemap: %s/sitemap.xml
         fh.write(txt)
 
 
-def build_favicon():
-    svg = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">'
-           '<rect width="40" height="40" rx="9" fill="#111827"/>'
-           '<path d="M22.5 8 14 22h5.2l-1.7 10L27 17.5h-5.4L22.5 8Z" fill="#FACC15"/></svg>')
-    with open(os.path.join(ROOT, "favicon.svg"), "w", encoding="utf-8") as fh:
-        fh.write(svg)
-    logo_path = os.path.join(ROOT, "assets", "images",
-                             "electricien-richard-logo.svg")
-    os.makedirs(os.path.dirname(logo_path), exist_ok=True)
-    with open(logo_path, "w", encoding="utf-8") as fh:
-        fh.write('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" '
-                 'width="320" height="80" role="img" '
-                 'aria-label="Electricien Richard">'
-                 '<rect width="80" height="80" rx="18" fill="#111827"/>'
-                 '<path d="M45 16 28 44h10.4l-3.4 20L54 35h-10.8L45 16Z" fill="#FACC15"/>'
-                 '<text x="96" y="40" font-family="Inter,Arial,sans-serif" font-size="26" '
-                 'font-weight="800" fill="#111827">Electricien</text>'
-                 '<text x="96" y="66" font-family="Inter,Arial,sans-serif" font-size="26" '
-                 'font-weight="800" fill="#CA8A04">Richard</text></svg>')
+def verifier_marque():
+    """La marque et le favicon sont des fichiers sources, pas des generes.
+
+    Ils sont ecrits a la main dans assets/images/logo/ et favicon.svg ; le build
+    se contente de verifier leur presence pour eviter une page sans icone.
+    """
+    requis = ["favicon.svg", "favicon.ico", "assets/images/favicon-32.png",
+              "assets/images/logo/electricien-richard-marque.svg",
+              "assets/images/apple-touch-icon.png",
+              "assets/images/logo/electricien-richard-logo-512.png"]
+    return [f for f in requis if not os.path.exists(os.path.join(ROOT, f))]
 
 
 def build_photo_report():
@@ -2216,7 +2208,6 @@ def main():
     build_sitemap_page()
     build_404()
 
-    build_favicon()
     build_robots()
     build_htaccess()
     n = build_sitemap()
@@ -2226,7 +2217,9 @@ def main():
     print("  %d emplacements photo en attente (voir PHOTOS-A-FOURNIR.md)"
           % len(MISSING_IMAGES))
 
-    problems = sanity_checks()
+    manquants = verifier_marque()
+    problems = ["Fichier de marque manquant : %s" % f for f in manquants]
+    problems += sanity_checks()
     broken = check_internal_links()
     if broken:
         problems.extend("Lien interne casse : %s" % b for b in broken)

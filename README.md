@@ -115,6 +115,33 @@ décrite.
 avant/après de l'accueil n'apparaissent que lorsqu'ils contiennent de vraies photos.
 Le visiteur ne voit jamais d'emplacement en attente.
 
+## Marque, favicon et icônes
+
+| Fichier | Rôle |
+|---|---|
+| `assets/images/logo/electricien-richard-marque.svg` | Marque vectorielle (anneau, R, éclair, câble, prise). Source unique, intégrée en ligne dans l'en-tête et le pied de page — aucune requête réseau. |
+| `favicon.svg` | Version simplifiée, lisible jusqu'à 16 px : anneau + R + éclair sur pastille blanche. |
+| `favicon.ico`, `assets/images/favicon-32.png` | Replis pour les navigateurs qui ignorent le SVG. |
+| `assets/images/apple-touch-icon.png` | 180×180, écran d'accueil iOS. |
+| `assets/images/logo/electricien-richard-logo-512.png` | 512×512, déclaré comme `logo` en JSON-LD. |
+| `assets/images/og/electricien-richard-og.png` | 1200×630, aperçu lors des partages. |
+
+Sur fond sombre, la marque est basculée automatiquement en version inversée
+(les éléments anthracite passent en blanc), sans quoi le R et la prise
+disparaîtraient dans le pied de page.
+
+**Remplacer par le fichier d'origine** : déposez votre logo sous
+`assets/images/logo/electricien-richard-logo.svg` (ou `.webp`, `.png`). Le build
+le détecte et l'utilise tel quel dans l'en-tête et le pied de page, à la place de
+la marque reconstruite. Les dimensions sont lues dans le fichier.
+
+**Régénérer les icônes** après une modification de la marque :
+
+```bash
+python3 tools/make-icons.py     # nécessite Playwright + Chromium
+python3 tools/build.py
+```
+
 ## Architecture
 
 ```

@@ -87,7 +87,7 @@ SITE = {
     "form_action": None,   # A_COMPLETER : ex. "https://formspree.io/f/xxxxxxx"
 
     # --- Identite visuelle ----------------------------------------------
-    "logo": "/assets/images/electricien-richard-logo.svg",
+    "logo": "/assets/images/logo/electricien-richard-logo-512.png",
     "og_default": "/assets/images/og/electricien-richard-og.png",
     "theme_color": "#FACC15",
 }
