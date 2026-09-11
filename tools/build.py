@@ -506,10 +506,10 @@ def build_city_page(dep, city):
     page_url = url_for(path)
     img = IMG.city_image(city["slug"], city["name"])
 
-    secteurs = '<ul class="link-cloud" style="margin-bottom:1.4rem">%s</ul>' % "".join(
-        "<li><span style=\"display:inline-block;padding:.5rem .9rem;background:#fff;"
-        "border:1px solid #E5E7EB;border-radius:10px;font-size:.9rem;font-weight:600\">"
-        "%s</span></li>" % esc(s) for s in city["secteurs"])
+    # Styles portes par la feuille de style, pas en ligne : les angles restent
+    # coherents avec le reste du site.
+    secteurs = '<ul class="secteur-list">%s</ul>' % "".join(
+        "<li>%s</li>" % esc(s) for s in city["secteurs"])
 
     besoins = "".join(
         '<article class="card card--plain"><h3>%s</h3><p>%s</p></article>' % (esc(t), esc(d))

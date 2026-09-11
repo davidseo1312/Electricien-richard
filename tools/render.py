@@ -451,12 +451,13 @@ def logo_fichier():
     return None
 
 
-def brand_lockup(hauteur=42, inverse=False):
-    """Bloc de marque de l'en-tete et du pied de page.
+def brand_lockup(inverse=False):
+    """Bloc de marque complet : signe + ELECTRICIEN / RICHARD / EN BRETAGNE.
 
-    Si le logo complet du client est present dans assets/images/logo/, il est
-    utilise tel quel. Sinon, la marque vectorielle est affichee a cote du nom,
-    compose en texte reel (lisible par les moteurs et les lecteurs d'ecran).
+    Si le fichier logo du client est depose dans assets/images/logo/, il est
+    utilise tel quel. Sinon le lockup est compose ici : le signe en SVG inline,
+    le nom en texte reel (net a toute resolution, lisible par les moteurs et
+    les lecteurs d'ecran, et sans requete supplementaire).
     """
     fichier = logo_fichier()
     if fichier:
@@ -464,18 +465,20 @@ def brand_lockup(hauteur=42, inverse=False):
                 else webp_size(os.path.join(ROOT, fichier)))
         attrs = ""
         if dims:
-            ratio = dims[0] / dims[1]
-            attrs = ' width="%d" height="%d"' % (round(hauteur * ratio), hauteur)
-        return ('<img class="brand-logo" src="/%s" alt="Electricien Richard"%s '
-                'decoding="async">' % (fichier, attrs))
+            hauteur = 58
+            attrs = ' width="%d" height="%d"' % (round(hauteur * dims[0] / dims[1]), hauteur)
+        return ('<img class="brand-logo" src="/%s" alt="Electricien Richard, '
+                'artisan électricien"%s decoding="async">' % (fichier, attrs))
 
-    cls = " brand-text--inverse" if inverse else ""
+    cls = " brand-word--inverse" if inverse else ""
     return (
         '<span class="brand-mark" aria-hidden="true">%s</span>'
-        '<span class="brand-text%s"><span class="brand-l1">ÉLECTRICIEN</span>'
-        '<span class="brand-l2">RICHARD</span>'
-        '<span class="brand-l3">Dépannage · Installation · Rénovation</span></span>'
-        % (MARQUE_INVERSE if inverse else MARQUE, cls))
+        '<span class="brand-word%s">'
+        '<span class="brand-l1">Électricien</span>'
+        '<span class="brand-l2">Richard</span>'
+        '<span class="brand-l3"><i aria-hidden="true"></i>En Bretagne'
+        '<i aria-hidden="true"></i></span>'
+        '</span>' % (MARQUE_INVERSE if inverse else MARQUE, cls))
 
 
 # --------------------------------------------------------------- navigation
@@ -549,9 +552,10 @@ def header(current_url):
 <a class="skip-link" href="#main">Aller au contenu principal</a>
 
 <div class="topbar"><div class="container">
-  <p class="topbar-zone">%s Artisan électricien — Côtes-d'Armor · Finistère ·
-    Ille-et-Vilaine · Morbihan · Loire-Atlantique · Maine-et-Loire</p>
-  <p class="topbar-arg">%s Devis détaillé, gratuit et sans engagement</p>
+  <p class="topbar-zone">%s <span class="topbar-long">Artisan électricien —
+    Bretagne &amp; Pays de la Loire</span>
+    <span class="topbar-dept">22 · 29 · 35 · 56 · 44 · 49</span></p>
+  <p class="topbar-arg">%s Devis gratuit et sans engagement</p>
 </div></div>
 
 <header class="site-header" id="site-header">
@@ -610,7 +614,7 @@ def header(current_url):
     </button>
   </div>
 </header>""" % (
-        icon("map", 14), icon("check", 14), brand_lockup(44),
+        icon("map", 14), icon("check", 14), brand_lockup(),
         CHEVRON, colonnes,
         SITE["phone_tel"], icon("phone", 18), SITE["phone_display"],
         CHEVRON, zones, simples,
@@ -682,7 +686,7 @@ def footer():
   <a class="btn btn--primary" href="tel:%s" aria-label="Appeler le %s">%s
     <span class="sticky-num">%s</span><span class="sticky-short">Appeler</span></a>
   <a class="btn btn--dark" href="/devis-electricien.html">Demander un devis</a>
-</nav>""" % (brand_lockup(40, inverse=True), "".join(contact_bits), ul(FOOTER_SERVICES), ul(FOOTER_ZONES),
+</nav>""" % (brand_lockup(inverse=True), "".join(contact_bits), ul(FOOTER_SERVICES), ul(FOOTER_ZONES),
              ul(FOOTER_INFO), 2026, SITE["phone_tel"], SITE["phone_display"],
              icon("phone", 18), SITE["phone_display"])
 
