@@ -713,3 +713,35 @@ figcaption{font-size:.86rem;color:var(--text-secondary);margin-top:.6rem;line-he
   margin:0;padding:.5rem .9rem;background:var(--white);border:1px solid var(--border);
   font-size:.9rem;font-weight:600;color:var(--text)
 }
+
+/* ==========================================================================
+   ANGLES DROITS — REGLE DE GARDE
+   Placee en fin de feuille et marquee !important pour couvrir trois cas que
+   les regles precedentes ne pouvaient pas atteindre :
+   1. la CSS de Leaflet, injectee dans le <head> APRES cette feuille, qui
+      arrondit ses controles de zoom, ses bulles et son attribution ;
+   2. les styles natifs d'iOS et de Safari, qui arrondissent d'office les
+      champs de formulaire et les boutons ;
+   3. tout style en ligne residuel.
+   ========================================================================== */
+*,*::before,*::after{border-radius:0 !important}
+
+/* Champs et boutons : neutralisation de l'apparence native (iOS, Safari) */
+input,select,textarea,button,
+input[type="search"],input[type="tel"],input[type="email"],input[type="text"],
+input[type="checkbox"],.btn{
+  -webkit-appearance:none;appearance:none
+}
+/* La case a cocher doit rester visible une fois son apparence native retiree */
+.form .consent input[type="checkbox"]{
+  border:1.5px solid var(--border);background:var(--white);display:grid;place-content:center
+}
+.form .consent input[type="checkbox"]:checked{background:var(--yellow-primary);border-color:var(--yellow-dark)}
+.form .consent input[type="checkbox"]:checked::after{
+  content:"";width:10px;height:10px;
+  background:var(--dark);
+  clip-path:polygon(14% 44%,0 60%,40% 100%,100% 18%,84% 4%,38% 68%)
+}
+/* Seule exception : le halo lumineux decoratif du hero, qui est un degrade
+   circulaire et non une boite. */
+.hero::after{border-radius:50% !important}
