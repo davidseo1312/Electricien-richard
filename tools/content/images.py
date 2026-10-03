@@ -38,6 +38,13 @@ PHOTO_APPAREILLAGE_MUR = "assets/images/prises/raccordement-prises-interrupteurs
 PHOTO_POSE_PRISE = "assets/images/prises/installation-prise-courant-sejour.webp"
 PHOTO_COMPTEUR_LINKY = ("assets/images/tableau-electrique/"
                         "intervention-disjoncteur-branchement-compteur.webp")
+# Un seul fichier, reference par trois pages differentes (accueil, tableau
+# electrique, installation) : une seule requete reseau et un seul cache.
+# La photo n'apparait jamais deux fois sur une meme page.
+PHOTO_TABLEAU_CHANTIER = ("assets/images/tableau-electrique/"
+                          "electricien-raccordement-tableau-electrique.webp")
+ALT_TABLEAU_CHANTIER = ("Électricien raccordant les circuits d'un tableau électrique "
+                        "en cours d'installation")
 
 # Regle : une photo = un seul emplacement. Aucune photo n'est reutilisee
 # a plusieurs endroits du site.
@@ -50,12 +57,9 @@ def slot(file, alt, width=1200, height=800, caption=None, sujet=None):
 
 IMAGES = {
     # ---- Accueil ----------------------------------------------------------
-    # ---- PHOTO REELLE : cuisine, pose d'un bandeau LED sous meubles hauts
+    # ---- PHOTO REELLE : raccordement d'un tableau electrique sur chantier
     "hero": slot(
-        PHOTO_LED_CUISINE,
-        "Électricien fixant un bandeau LED sous les meubles hauts d'une cuisine",
-        1536, 1024,
-        sujet="Cuisine grise, plan de travail bois : pose d'un ruban LED sous meubles hauts"),
+        PHOTO_TABLEAU_CHANTIER, ALT_TABLEAU_CHANTIER, 1536, 1024),
     # ---- Galerie d'accueil : emplacements dedies.
     # Aucune photo deja affectee a une page de prestation n'y est reprise :
     # la galerie attend ses propres prises de vue. La section entiere reste
@@ -79,10 +83,11 @@ IMAGES = {
         "Reprise de l'installation électrique dans une maison ancienne", 1200, 800,
         sujet="PHOTO ATTENDUE : rénovation dans du bâti ancien"),
     "home_gallery_5": slot(
-        "assets/images/bornes/installation-borne-recharge-vehicule-electrique.webp",
-        "Borne de recharge murale installée dans un garage", 1200, 800,
-        "Point de recharge raccordé sur un circuit dédié.",
-        sujet="PHOTO ATTENDUE : borne de recharge posée en garage ou en façade"),
+        PHOTO_LED_CUISINE,
+        "Électricien fixant un bandeau LED sous les meubles hauts d'une cuisine",
+        1536, 1024,
+        "Éclairage de plan de travail : la lumière est placée là où l'on travaille.",
+        sujet="Cuisine grise, plan de travail bois : pose d'un ruban LED sous meubles hauts"),
     "home_gallery_6": slot(
         "assets/images/tableau-electrique/remplacement-tableau-electrique-chantier.webp",
         "Électricien intervenant sur un tableau électrique", 1200, 800,
@@ -120,8 +125,8 @@ IMAGES = {
         "assets/images/depannage/recherche-panne-electrique-mesure.webp",
         "Recherche de panne électrique avec appareil de mesure", 1200, 800),
     "svc_installation-electrique": slot(
-        "assets/images/installation/installation-electrique-neuve-tableau.webp",
-        "Installation électrique neuve en cours de raccordement", 1200, 800),
+        PHOTO_TABLEAU_CHANTIER, ALT_TABLEAU_CHANTIER, 1536, 1024,
+        "Câblage du tableau de répartition sur un chantier d'installation."),
     "svc_renovation-electrique": slot(
         "assets/images/renovation/renovation-electrique-passage-circuits.webp",
         "Passage de nouveaux circuits lors d'une rénovation électrique", 1200, 800,
@@ -133,8 +138,8 @@ IMAGES = {
         "assets/images/interventions/diagnostic-electrique-controle-installation.webp",
         "Contrôle d'une installation électrique lors d'un diagnostic", 1200, 800),
     "svc_tableau-electrique": slot(
-        "assets/images/tableau-electrique/remplacement-tableau-electrique.webp",
-        "Remplacement d'un tableau électrique", 1200, 800),
+        PHOTO_TABLEAU_CHANTIER, ALT_TABLEAU_CHANTIER, 1536, 1024,
+        "Chaque départ est raccordé puis repéré avant la mise sous tension."),
     "svc_disjoncteur": slot(
         PHOTO_COMPTEUR_LINKY,
         "Électricien intervenant sur le disjoncteur de branchement d'un coffret "

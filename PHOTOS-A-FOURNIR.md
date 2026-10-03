@@ -22,20 +22,19 @@ Le script corrige l'orientation, **supprime les métadonnées EXIF (y compris le
 
 Rien d'autre n'est à modifier : les dimensions affichées sont lues dans le fichier livré, donc le ratio est toujours exact et aucun décalage de mise en page ne se produit.
 
-## 1. Photos transmises — fichiers à déposer (6)
+## 1. Photos transmises — fichiers à déposer (5)
 
 Ces photos ont été analysées et affectées. **Une photo = un seul emplacement**, aucune n'est réutilisée ailleurs sur le site.
 
 | Clé (nom du fichier) | Photo | Emplacement |
 |---|---|---|
-| `hero` | Cuisine grise, plan de travail bois : pose d'un ruban LED sous les meubles hauts | Accueil — image principale |
 | `svc_eclairage` | Chambre : technicien sur escabeau posant un ruban LED en corniche de plafond | eclairage.html |
 | `svc_luminaire` | Salon : technicien casqué remplaçant l'ampoule d'une suspension noire | luminaire.html |
 | `svc_prise-electrique` | Séjour : technicien à genoux posant une prise, bâche de protection et outils au sol | prise-electrique.html |
 | `svc_disjoncteur` | Coffret extérieur : intervention sur le disjoncteur de branchement sous compteur Linky | disjoncteur.html |
 | `svc_interrupteur` | Rangée de boîtes d'encastrement ouvertes, raccordement des prises et interrupteurs | interrupteur.html |
 
-## 2. Emplacements encore libres (62)
+## 2. Emplacements encore libres (60)
 
 Les sections concernées restent masquées tant qu'aucune photo n'y figure : le site n'affiche jamais d'emplacement vide au visiteur.
 
@@ -77,8 +76,6 @@ Les sections concernées restent masquées tant qu'aucune photo n'y figure : le 
       → Véhicule d'intervention d'Electricien Richard
 - [ ] `assets/images/electricien/electricien-travaux-electriques.webp`
       → Électricien réalisant des travaux électriques dans un logement
-- [ ] `assets/images/installation/installation-electrique-neuve-tableau.webp`
-      → Installation électrique neuve en cours de raccordement
 - [ ] `assets/images/installation/raccordement-electrique-vmc.webp`
       → Raccordement électrique d'un caisson de VMC
 - [ ] `assets/images/interventions/devis-travaux-electriques.webp`
@@ -95,8 +92,6 @@ Les sections concernées restent masquées tant qu'aucune photo n'y figure : le 
       → PHOTO ATTENDUE : passage de gaines ou saignées en rénovation
 - [ ] `assets/images/tableau-electrique/remplacement-tableau-electrique-chantier.webp`
       → PHOTO ATTENDUE : tableau électrique ouvert pendant l'intervention
-- [ ] `assets/images/tableau-electrique/remplacement-tableau-electrique.webp`
-      → Remplacement d'un tableau électrique
 - [ ] `assets/images/zones/electricien-ancenis-intervention.webp`
       → Intervention électrique à Ancenis-Saint-Géréon
 - [ ] `assets/images/zones/electricien-angers-intervention.webp`

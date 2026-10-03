@@ -124,8 +124,10 @@ def main():
         return 0
 
     os.makedirs(INBOX, exist_ok=True)
+    IGNORES = {".md", ".txt"}
     fichiers = [f for f in sorted(os.listdir(INBOX))
-                if os.path.isfile(os.path.join(INBOX, f)) and not f.startswith(".")]
+                if os.path.isfile(os.path.join(INBOX, f)) and not f.startswith(".")
+                and os.path.splitext(f)[1].lower() not in IGNORES]
     if not fichiers:
         print("photos-inbox/ est vide.")
         print("Deposez-y vos photos (nommees d'apres la cle de l'emplacement),")

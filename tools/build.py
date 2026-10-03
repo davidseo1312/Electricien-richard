@@ -2016,8 +2016,8 @@ def build_photo_report():
     # Photos deja transmises par le client : cle d'emplacement -> description.
     # La cle sert a nommer le fichier depose dans photos-inbox/.
     TRANSMISES = [
-        ("hero", "Cuisine grise, plan de travail bois : pose d'un ruban LED sous les "
-                 "meubles hauts", "Accueil — image principale"),
+        ("home_gallery_5", "Cuisine grise, plan de travail bois : pose d'un ruban LED "
+                           "sous les meubles hauts", "Galerie de l'accueil"),
         ("svc_eclairage", "Chambre : technicien sur escabeau posant un ruban LED en "
                           "corniche de plafond", "eclairage.html"),
         ("svc_luminaire", "Salon : technicien casqué remplaçant l'ampoule d'une "
