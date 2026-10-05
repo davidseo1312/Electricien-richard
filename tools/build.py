@@ -1658,6 +1658,13 @@ def build_legal_pages():
         """Identification de l'entreprise : en attente des pièces officielles."""
         return esc(v) if v else attente
 
+    def ligne(libelle, valeur):
+        """Ligne optionnelle : rien n'est affiché tant que la valeur manque."""
+        if not valeur:
+            return ""
+        return ('    <tr><th scope="row">%s</th><td>%s</td></tr>\n'
+                % (esc(libelle), esc(valeur)))
+
     # ---------------- Mentions légales ----------------
     ape_note = ""
     if not L.get("ape_coherent", True):
@@ -1684,9 +1691,8 @@ def build_legal_pages():
   <div class="table-wrap"><table><tbody>
     <tr><th scope="row">Dénomination</th><td>%s</td></tr>
     <tr><th scope="row">Forme juridique</th><td>%s</td></tr>
-    <tr><th scope="row">Siège social</th><td>%s</td></tr>
-    <tr><th scope="row">SIREN</th><td>%s</td></tr>
-    <tr><th scope="row">SIRET (siège)</th><td>%s</td></tr>
+%s    <tr><th scope="row">SIREN</th><td>%s</td></tr>
+    <tr><th scope="row">SIRET</th><td>%s</td></tr>
     <tr><th scope="row">RCS</th><td>%s</td></tr>
     <tr><th scope="row">Code APE</th><td>%s</td></tr>
     <tr><th scope="row">TVA intracommunautaire</th><td>%s</td></tr>
@@ -1752,7 +1758,8 @@ def build_legal_pages():
   target="_blank">ec.europa.eu/consumers/odr</a>.</p>
 </div></section>
 """ % (SITE["phone_tel"], SITE["phone_display"],
-       val(L["exploitant"]), val(L["forme"]), val(L["adresse_siege"]), val(L["siren"]),
+       val(L["exploitant"]), val(L["forme"]),
+       ligne("Siège social", L["adresse_siege"]), val(L["siren"]),
        val(L["siret"]), val(L["rcs"]),
        ("%s — %s" % (esc(L["ape_code"]), esc(L["ape_label"]))
         if L["ape_code"] and L["ape_label"] else attente),
@@ -1842,8 +1849,9 @@ def build_legal_pages():
   <h2 id="droits">Vos droits</h2>
   <p>Vous disposez d'un droit d'accès, de rectification, d'effacement, de limitation et
   d'opposition au traitement de vos données, ainsi que d'un droit à la portabilité. Ces
-  droits s'exercent par courrier électronique à l'adresse indiquée dans les mentions
-  légales, ou par courrier au siège de l'entreprise.</p>
+  droits s'exercent par courrier électronique à l'adresse indiquée dans les
+  <a href="/mentions-legales.html">mentions légales</a>, ou par téléphone au
+  %s.</p>
   <p>Vous pouvez également introduire une réclamation auprès de la Commission nationale de
   l'informatique et des libertés (CNIL), 3 place de Fontenoy, TSA 80715, 75334 Paris
   Cedex 07 — <a href="https://www.cnil.fr" rel="noopener nofollow"
@@ -1853,7 +1861,8 @@ def build_legal_pages():
   <p>Les données transmises via le site circulent en HTTPS. Elles ne sont accessibles qu'aux
   personnes chargées du traitement des demandes.</p>
 </div></section>
-""" % (esc(SITE["legal"]["exploitant"] or SITE["name"]), form_desc)
+""" % (esc(SITE["legal"]["exploitant"] or SITE["name"]), form_desc,
+       SITE["phone_display"])
 
     html = render_page("politique-de-confidentialite.html",
                        "Politique de confidentialité | Electricien Richard",
