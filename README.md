@@ -34,7 +34,7 @@ Tout se trouve dans **`tools/content/site.py`** :
 | `phone_display` / `phone_tel` | ✅ Renseigné : **02 20 06 00 75** (lien `tel:0220060075`, `+33220060075` en JSON-LD). |
 | `email` | ⚠️ `contact@electricien-richard.fr` n'existe pas encore : créer la boîte, puis passer `email_is_placeholder` à `False`. |
 | `address` | Laissé à `None` **volontairement** — voir « Siège social et SEO local » ci-dessous. |
-| `legal` | ✅ Renseigné (ASSOUL BILAL, SIREN, SIRET, RCS, siège). Alimente **uniquement** la page mentions légales. Reste à compléter : TVA intracommunautaire, assurances, hébergeur, médiateur. |
+| `legal` | ⚠️ **À compléter** : dénomination légale, forme juridique, SIREN/SIRET, RCS, adresse du siège, code APE, TVA, directeur de la publication. Alimente **uniquement** la page mentions légales, jamais les données structurées. Tant qu'un champ vaut `None`, la page affiche un marqueur « à compléter » visible plutôt qu'une information inventée. |
 | `geo` | Coordonnées GPS réelles de l'établissement (facultatif). |
 | `opening_hours` | Horaires réels. `None` = aucun horaire affiché ni déclaré. |
 | `assurance`, `hebergeur` | Mentions légales : assureur + n° de police (RC pro et décennale), et identité de l'hébergeur. |
@@ -43,33 +43,30 @@ Tout se trouve dans **`tools/content/site.py`** :
 
 Après modification : `python3 tools/build.py`.
 
-### Siège social et SEO local — décision technique
+### Mentions légales — obligation à satisfaire avant mise en ligne publique
 
-Le siège social (1 rue Albert Simonin, 92400 Courbevoie) figure dans les **mentions
-légales**, comme la loi l'impose. Il n'est en revanche **pas** déclaré comme adresse du
-`LocalBusiness` dans les données structurées, et `address` reste donc à `None`.
+La page `/mentions-legales/` est en place et correctement structurée, mais ses champs
+d'identification sont vides et affichent un marqueur « à compléter ».
 
-Raison : cette adresse se situe dans les Hauts-de-Seine, à plusieurs centaines de
-kilomètres des six départements desservis. La déclarer comme adresse de l'établissement
-enverrait à Google un signal de localisation en Île-de-France, en contradiction directe
-avec le référencement local visé en Bretagne et en Pays de la Loire. Le site déclare donc
-uniquement une zone desservie (`areaServed`), ce qui est le schéma prévu pour une
-entreprise d'intervention sans point d'accueil du public.
+L'article 6-III de la loi n° 2004-575 pour la confiance dans l'économie numérique
+impose d'identifier l'éditeur d'un site accessible au public : dénomination, forme
+juridique, adresse du siège, numéro d'immatriculation et directeur de la
+publication. Ces champs sont donc à renseigner dans `tools/content/site.py`
+(clé `legal`) avant que le site ne soit réellement publié et indexé.
 
-Si un établissement secondaire est un jour ouvert dans l'un des six départements, c'est
-**cette** adresse qu'il faudra renseigner dans `address` — et elle devra être strictement
-identique à celle de la fiche Google Business Profile.
+Restent également à compléter : assurances (RC professionnelle et décennale),
+hébergeur, et coordonnées du médiateur de la consommation.
 
-### Points à faire vérifier par l'exploitant
+### Adresse et SEO local — décision technique
 
-1. **Code APE 81.29A** — l'activité enregistrée (désinfection, désinsectisation,
-   dératisation) ne correspond pas à des travaux d'électricité. Une mise à jour auprès de
-   l'INSEE est à demander.
-2. **Assurances** — la RC professionnelle et la décennale doivent couvrir explicitement
-   l'activité d'électricien. Une police souscrite pour une activité de nettoyage ou de
-   désinfection ne couvrirait pas des travaux électriques en cas de sinistre.
-3. **Adresse e-mail** — `contact@electricien-richard.fr` doit être créée pour que le
-   formulaire soit exploitable.
+Aucune adresse n'est déclarée comme adresse du `LocalBusiness` dans les données
+structurées, et `address` vaut `None`. Le site déclare uniquement une zone
+desservie (`areaServed`), ce qui est le schéma prévu pour une entreprise
+d'intervention sans point d'accueil du public.
+
+Si un établissement est un jour ouvert dans l'un des six départements, c'est
+**cette** adresse qu'il faudra renseigner dans `address` — et elle devra être
+strictement identique à celle de la fiche Google Business Profile.
 
 ### Ce qui n'est volontairement pas présent
 

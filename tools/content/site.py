@@ -39,28 +39,28 @@ SITE = {
     "email_is_placeholder": True,
 
     # --- Identite legale (mentions legales uniquement) --------------------
-    # ATTENTION : ces donnees alimentent UNIQUEMENT la page mentions legales.
-    # Elles ne sont volontairement PAS injectees comme adresse du LocalBusiness
-    # (voir "address" plus bas et le README) : le siege social se situe hors des
-    # six departements desservis, l'y declarer brouillerait le referencement local.
-    # A VERIFIER par l'exploitant avant publication definitive.
+    # Ces donnees alimentent UNIQUEMENT la page mentions legales ; elles ne sont
+    # jamais injectees dans les donnees structurees.
+    #
+    # >>> A COMPLETER AVANT MISE EN LIGNE PUBLIQUE <<<
+    # L'article 6-III de la loi pour la confiance dans l'economie numerique
+    # impose d'identifier l'editeur du site : denomination, forme juridique,
+    # adresse, numero d'immatriculation (SIREN/SIRET), et nom du directeur de
+    # la publication. Tant que ces champs valent None, la page affiche un
+    # marqueur "a completer" visible plutot qu'une information inventee.
     "legal": {
-        "exploitant": "ASSOUL BILAL",
-        "forme": "Entrepreneur individuel",
-        "siren": "901 133 041",
-        "siret": "901 133 041 00011",
-        "ape_code": "81.29A",
-        "ape_label": "Autres activités de nettoyage n.c.a. "
-                     "(désinfection, désinsectisation, dératisation)",
-        "rcs": "901 133 041 R.C.S. Nanterre",
-        "adresse_siege": "1 rue Albert Simonin, 92400 Courbevoie",
-        "tva": None,          # A_COMPLETER : numero de TVA intracommunautaire
-        "directeur_publication": "ASSOUL BILAL",
-        "source": "https://www.pappers.fr/entreprise/assoul-bilal-901133041",
-        # Le code APE enregistre ne couvre pas les travaux d'electricite :
-        # a faire modifier aupres de l'INSEE, et verifier que l'assurance
-        # (RC pro + decennale) couvre bien l'activite d'electricien.
-        "ape_coherent": False,
+        # Nom commercial sous lequel l'activite est presentee au public.
+        "exploitant": "Electricien Richard",
+        "forme": None,                 # A_COMPLETER : ex. "Entrepreneur individuel"
+        "siren": None,                 # A_COMPLETER
+        "siret": None,                 # A_COMPLETER
+        "ape_code": None,              # A_COMPLETER
+        "ape_label": None,             # A_COMPLETER
+        "rcs": None,                   # A_COMPLETER : greffe d'immatriculation
+        "adresse_siege": None,         # A_COMPLETER : adresse du siege social
+        "tva": None,                   # A_COMPLETER : TVA intracommunautaire
+        "directeur_publication": None, # A_COMPLETER : personne physique responsable
+        "ape_coherent": True,
     },
 
     # --- Etablissement ---------------------------------------------------

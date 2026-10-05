@@ -1672,16 +1672,21 @@ def build_legal_pages():
   à l'article 6 de la loi n° 2004-575 du 21 juin 2004 pour la confiance dans l'économie
   numérique.</p>
 
+  <div class="callout"><strong>Informations en cours de finalisation</strong>
+  <p>Les éléments d'identification de l'entreprise sont en cours de mise à jour et
+  seront complétés prochainement. Pour toute demande, le contact se fait par
+  téléphone au <a href="tel:%s">%s</a> ou via le
+  <a href="/contact.html">formulaire de contact</a>.</p></div>
+
   <h2 id="editeur">Éditeur du site</h2>
   <div class="table-wrap"><table><tbody>
-    <tr><th scope="row">Nom commercial</th><td>Electricien Richard</td></tr>
-    <tr><th scope="row">Exploitant</th><td>%s</td></tr>
+    <tr><th scope="row">Dénomination</th><td>%s</td></tr>
     <tr><th scope="row">Forme juridique</th><td>%s</td></tr>
     <tr><th scope="row">Siège social</th><td>%s</td></tr>
     <tr><th scope="row">SIREN</th><td>%s</td></tr>
     <tr><th scope="row">SIRET (siège)</th><td>%s</td></tr>
     <tr><th scope="row">RCS</th><td>%s</td></tr>
-    <tr><th scope="row">Code APE</th><td>%s — %s</td></tr>
+    <tr><th scope="row">Code APE</th><td>%s</td></tr>
     <tr><th scope="row">TVA intracommunautaire</th><td>%s</td></tr>
     <tr><th scope="row">Directeur de la publication</th><td>%s</td></tr>
     <tr><th scope="row">Téléphone</th><td><a href="tel:%s">%s</a></td></tr>
@@ -1690,10 +1695,9 @@ def build_legal_pages():
   %s
 
   <h2 id="activite">Zone d'exercice</h2>
-  <p>Le siège social mentionné ci-dessus est l'adresse administrative de l'entreprise. Les
-  interventions sont réalisées dans les Côtes-d'Armor (22), le Finistère (29),
+  <p>Les interventions sont réalisées dans les Côtes-d'Armor (22), le Finistère (29),
   l'Ille-et-Vilaine (35), le Morbihan (56), la Loire-Atlantique (44) et le Maine-et-Loire
-  (49). Le siège ne constitue pas un point d'accueil du public :
+  (49). L'entreprise ne dispose pas d'un point d'accueil du public :
   <a href="/contact.html">le contact se fait par téléphone ou par formulaire</a>.</p>
 
   <h2 id="assurances">Assurances professionnelles</h2>
@@ -1745,8 +1749,11 @@ def build_legal_pages():
   <a href="https://ec.europa.eu/consumers/odr/" rel="noopener nofollow"
   target="_blank">ec.europa.eu/consumers/odr</a>.</p>
 </div></section>
-""" % (val(L["exploitant"]), val(L["forme"]), val(L["adresse_siege"]), val(L["siren"]),
-       val(L["siret"]), val(L["rcs"]), val(L["ape_code"]), val(L["ape_label"]),
+""" % (SITE["phone_tel"], SITE["phone_display"],
+       val(L["exploitant"]), val(L["forme"]), val(L["adresse_siege"]), val(L["siren"]),
+       val(L["siret"]), val(L["rcs"]),
+       ("%s — %s" % (esc(L["ape_code"]), esc(L["ape_label"]))
+        if L["ape_code"] and L["ape_label"] else todo),
        val(L["tva"]), val(L["directeur_publication"]),
        SITE["phone_tel"], SITE["phone_display"], SITE["email"], SITE["email"],
        ape_note,
