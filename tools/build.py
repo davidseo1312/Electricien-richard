@@ -1651,10 +1651,12 @@ def build_about_faq():
 
 def build_legal_pages():
     L = SITE["legal"]
-    todo = ('<span class="a-completer">à compléter</span>')
+    attente = '<span class="a-completer">En attente de documents</span>'
+    todo = '<span class="a-completer">À compléter</span>'
 
     def val(v):
-        return esc(v) if v else todo
+        """Identification de l'entreprise : en attente des pièces officielles."""
+        return esc(v) if v else attente
 
     # ---------------- Mentions légales ----------------
     ape_note = ""
@@ -1673,9 +1675,9 @@ def build_legal_pages():
   numérique.</p>
 
   <div class="callout"><strong>Informations en cours de finalisation</strong>
-  <p>Les éléments d'identification de l'entreprise sont en cours de mise à jour et
-  seront complétés prochainement. Pour toute demande, le contact se fait par
-  téléphone au <a href="tel:%s">%s</a> ou via le
+  <p>Les éléments d'identification de l'entreprise sont en attente des documents
+  administratifs et seront publiés dès leur réception. Pour toute demande, le contact
+  se fait par téléphone au <a href="tel:%s">%s</a> ou via le
   <a href="/contact.html">formulaire de contact</a>.</p></div>
 
   <h2 id="editeur">Éditeur du site</h2>
@@ -1753,12 +1755,12 @@ def build_legal_pages():
        val(L["exploitant"]), val(L["forme"]), val(L["adresse_siege"]), val(L["siren"]),
        val(L["siret"]), val(L["rcs"]),
        ("%s — %s" % (esc(L["ape_code"]), esc(L["ape_label"]))
-        if L["ape_code"] and L["ape_label"] else todo),
+        if L["ape_code"] and L["ape_label"] else attente),
        val(L["tva"]), val(L["directeur_publication"]),
        SITE["phone_tel"], SITE["phone_display"], SITE["email"], SITE["email"],
        ape_note,
-       SITE["assurance"] or todo, SITE["assurance"] or todo,
-       "France métropolitaine" if SITE["assurance"] else todo,
+       SITE["assurance"] or attente, SITE["assurance"] or attente,
+       "France métropolitaine" if SITE["assurance"] else attente,
        SITE["hebergeur"] or todo, todo, todo)
 
     html = render_page("mentions-legales.html",
